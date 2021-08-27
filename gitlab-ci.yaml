@@ -1,0 +1,8 @@
+production:
+  script:
+    - sudo sh script.sh
+  stage: deploy
+  only:
+    - master
+  tags:
+    3hq-chat-production
