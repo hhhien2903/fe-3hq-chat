@@ -6,4 +6,4 @@ array=(${string//,/})
 
 # Interate server
 echo "Deploy project server ${string}"
-ssh ubuntu@${string} "cd /opt/fe-3hq-chat/ && git pull && sudo sh deploy-prod.sh"
+ssh ubuntu@${string} "cd /opt/fe-3hq-chat/ && sudo git pull && sudo sh deploy-prod.sh"
