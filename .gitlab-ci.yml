@@ -9,6 +9,6 @@ production_job:
     - chmod 600 ~/.ssh/id_rsa
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   script:
-    - bash .gitlab-deploy-prod.sh
+    - bash gitlab-deploy-prod.sh
   environment:
     name: production
