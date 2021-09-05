@@ -1,4 +1,4 @@
-export const getReplaceUTF8 = (str: any) => {
+export const getReplaceUTF8 = (str) => {
   str = str.replace(/[ăâáàảạãắẳẵằặấầẩẫậ]/gi, 'a');
   str = str.replace(/[éèẻẽẹêếềểễệ]/gi, 'e');
   str = str.replace(/đ/gi, 'd');
