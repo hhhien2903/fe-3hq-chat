@@ -2,7 +2,7 @@ FROM node:12
 RUN mkdir /app
 WORKDIR /app
 ADD . /app
-RUN npm install --save
+RUN yarn
 RUN npm install -g serve
 EXPOSE 3000
 RUN npm run build
