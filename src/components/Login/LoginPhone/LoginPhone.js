@@ -55,13 +55,22 @@ const LoginPhone = () => {
         let { otp } = value;
         let optConfirm = window.confirmationResult;
         optConfirm.confirm(otp).catch((err) => {
+          if (err.code === 'auth/user-disabled') {
+            notification.open({
+              key: 'errorLogin',
+              message: 'Tài khoản của bạn đã bị khoá!',
+              description:
+                'Tài khoản của bạn đã bị khoá, hãy liên hệ với Dịch Vụ Chăm Sóc Khách Hàng để biết thêm chi tiết!',
+              duration: 10,
+            });
+            return;
+          }
           notification.open({
             key: 'incorrectOtp',
             message: 'Nhập sai mã OTP!',
             description: 'Bạn đã nhập sai mã OTP, hãy kiểm tra, và tiến hành đăng nhập lại.',
             duration: 5,
           });
-          console.log('sai OTP', err);
         });
       })
       .catch((err) => {
@@ -88,7 +97,10 @@ const LoginPhone = () => {
         ]}
         name="phoneNumber"
       >
-        <Input style={{ width: '100%', borderRadius: '10px' }} placeholder="Số Điện Thoại" />
+        <Input
+          style={{ width: '100%', borderRadius: '40px', border: '1px solid #0068ff' }}
+          placeholder="Số Điện Thoại"
+        />
       </Form.Item>
 
       <Form.Item style={{ marginBottom: '10px' }}>
@@ -104,7 +116,11 @@ const LoginPhone = () => {
           ]}
           style={{ display: 'inline-block', width: 'calc(65% - 8px)' }}
         >
-          <Input style={{ borderRadius: '10px' }} bordered placeholder="Mã Xác Nhận" />
+          <Input
+            style={{ borderRadius: '40px', border: '1px solid #0068ff' }}
+            bordered
+            placeholder="Mã Xác Nhận"
+          />
         </Form.Item>
         <Form.Item style={{ display: 'inline-block', width: 'calc(35%)', marginLeft: '8px' }}>
           <Button shape="round" onClick={handleReceiveOTP} block type="primary">

@@ -1,13 +1,21 @@
-import React from 'react';
-import { Row, Button, Space } from 'antd';
+import { Row, Button, Space, notification } from 'antd';
 import './LoginOptions.scss';
 import { IoCall, IoLogoGoogle } from 'react-icons/io5';
 import { firebaseAuth, providers } from '../../../config/firebase';
 const LoginOptions = (props) => {
   const { setActiveComponent } = props;
-
   const handleGoogleLogin = () => {
-    firebaseAuth.signInWithRedirect(providers.googleProvider);
+    firebaseAuth.signInWithPopup(providers.googleProvider).catch((err) => {
+      if (err.code === 'auth/user-disabled') {
+        notification.open({
+          key: 'errorLogin',
+          message: 'Tài khoản của bạn đã bị khoá!',
+          description:
+            'Tài khoản của bạn đã bị khoá, hãy liên hệ với Dịch Vụ Chăm Sóc Khách Hàng để biết thêm chi tiết!',
+          duration: 10,
+        });
+      }
+    });
   };
 
   return (
