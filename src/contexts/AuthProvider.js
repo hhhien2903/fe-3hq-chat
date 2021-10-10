@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { firebaseAuth } from '../config/firebase';
 import { useHistory } from 'react-router-dom';
 import { Spin, Row, notification } from 'antd';
-
+import userApi from '../api/userApi';
 export const AuthContext = React.createContext();
 
 export default function AuthProvider({ children }) {
@@ -13,25 +13,36 @@ export default function AuthProvider({ children }) {
   React.useState(() => {
     const unsubscribed = firebaseAuth.onAuthStateChanged(async (firebaseUser) => {
       if (!firebaseUser) {
+        setUser({});
         setTimeout(() => {
           setIsLoading(false);
         }, 1000);
+
         history.push('/login');
         return;
       }
-      const { displayName, uid } = firebaseUser;
-      const token = await firebaseUser.getIdToken();
-      await setUser({ displayName, uid, token });
-      setIsLoading(false);
-      notification.close('sendedOtpNotify');
-      notification.close('incorrectOtp');
-      history.push('/');
+      const { uid } = firebaseUser;
+      try {
+        const user = await userApi.getUserById(uid);
+        if (user) {
+          setUser(user);
+          setIsLoading(false);
+          notification.destroy();
+          history.push('/');
+        }
+      } catch (error) {
+        setIsLoading(false);
+        notification.destroy();
+        history.push('/register');
+      }
     });
-    return () => unsubscribed();
+    return () => {
+      unsubscribed();
+    };
   }, [history]);
 
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider value={{ user, setUser, setIsLoading }}>
       {isLoading ? (
         <Row justify="center" align="middle" style={{ height: '100vh' }}>
           <Spin size="large" />

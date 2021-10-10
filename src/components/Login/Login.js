@@ -7,7 +7,6 @@ import LoginPhone from './LoginPhone/LoginPhone';
 import { IoArrowBack } from 'react-icons/io5';
 const Login = () => {
   const [activeComponent, setActiveComponent] = useState('default');
-
   return (
     <Row
       className="login"
@@ -25,7 +24,7 @@ const Login = () => {
             />
           )}
           <Col className="login-header" span={24}>
-            <Image id="login-logo" preview={false} width={80} height={80} src="/favicon.ico" />
+            <Image id="logo" preview={false} width={80} height={80} src="/favicon.ico" />
             <p className="login-title">Đăng Nhập vào 3HQ - Chat</p>
           </Col>
           <Col className="login-body" span={24}>
