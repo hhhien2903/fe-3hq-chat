@@ -2,7 +2,7 @@ FROM node:12
 RUN mkdir /app
 WORKDIR /app
 ADD . /app
-RUN yarn
+RUN yarn install --network-timeout 1000000
 RUN npm install -g serve
 EXPOSE 3000
 RUN npm run build:prod
