@@ -69,12 +69,19 @@ const LoginPhone = () => {
             key: 'incorrectOtp',
             message: 'Nhập sai mã OTP!',
             description: 'Bạn đã nhập sai mã OTP, hãy kiểm tra, và tiến hành đăng nhập lại.',
-            duration: 5,
+            duration: 10,
           });
         });
       })
       .catch((err) => {
         console.log(err);
+        notification.open({
+          key: 'notClickReceiveOTP',
+          message: 'Vui lòng chọn nút Nhận Mã OTP!',
+          description:
+            'Bạn hãy chọn nút Nhận Mã OTP để hệ thống thực hiện gửi mã về số điện thoại của bạn!',
+          duration: 10,
+        });
       });
   };
 
