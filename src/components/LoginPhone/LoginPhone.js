@@ -1,6 +1,6 @@
 import { Form, Input, Button, notification } from 'antd';
 import './LoginPhone.scss';
-import { firebaseAuth, firebase } from '../../../config/firebase';
+import { firebaseAuth, firebase } from '../../config/firebase';
 
 const LoginPhone = () => {
   const [formLoginPhone] = Form.useForm();
