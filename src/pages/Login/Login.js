@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Col, Row, Image } from 'antd';
 import background from '../../assets/images/backgound.jpg';
 import './Login.scss';
-import LoginOptions from './LoginOptions/LoginOptions';
-import LoginPhone from './LoginPhone/LoginPhone';
+import LoginOptions from '../../components/LoginOption/LoginOption';
+import LoginPhone from '../../components/LoginPhone/LoginPhone';
 import { IoArrowBack } from 'react-icons/io5';
+
 const Login = () => {
   const [activeComponent, setActiveComponent] = useState('default');
+
   return (
     <Row
       className="login"

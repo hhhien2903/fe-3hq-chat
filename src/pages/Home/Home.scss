@@ -1,0 +1,16 @@
+.home-container {
+  .home-content {
+    padding: 30px 30px;
+
+    .title {
+      text-align: center;
+    }
+    .slick-dots li.slick-active button {
+      background: #007aff;
+    }
+
+    .slick-dots li {
+      background: rgb(54, 54, 54);
+    }
+  }
+}
