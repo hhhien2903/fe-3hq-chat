@@ -1,8 +1,9 @@
 import { Row, Button, Space, notification } from 'antd';
-import './LoginOptions.scss';
+import './LoginOption.scss';
 import { IoCall, IoLogoGoogle } from 'react-icons/io5';
-import { firebaseAuth, providers } from '../../../config/firebase';
-const LoginOptions = (props) => {
+import { firebaseAuth, providers } from '../../config/firebase';
+
+const LoginOption = (props) => {
   const { setActiveComponent } = props;
   const handleGoogleLogin = () => {
     firebaseAuth.signInWithPopup(providers.googleProvider).catch((err) => {
@@ -44,4 +45,4 @@ const LoginOptions = (props) => {
   );
 };
 
-export default LoginOptions;
+export default LoginOption;
