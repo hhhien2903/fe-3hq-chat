@@ -1,11 +1,12 @@
 import { Route, Switch, BrowserRouter } from 'react-router-dom';
-import Login from '../Login/Login';
-import Logout from '../Logout/Logout';
-import Home from '../Home/Home';
-import Chat from '../Chat/Chat';
-import Register from '../Register/Register';
+import Home from './pages/Home/Home';
+import Login from './pages/Login/Login';
+import Chat from './pages/Chat/Chat';
+import Contact from './pages/Contact/Contact';
+import Register from './pages/Register/Register';
+import Logout from './pages/Logout/Logout';
 import './App.css';
-import AuthProvider from '../../contexts/AuthProvider';
+import AuthProvider from './contexts/AuthProvider';
 function App() {
   return (
     <BrowserRouter>
@@ -19,6 +20,9 @@ function App() {
           </Route>
           <Route exact path="/chat">
             <Chat />
+          </Route>
+          <Route exact path="/contact">
+            <Contact />
           </Route>
           <Route exact path="/register">
             <Register />
