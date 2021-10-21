@@ -1,0 +1,28 @@
+.toolbar {
+  .toolbar-header {
+    height: 70px;
+    border-bottom: 1px solid #dbdbdf;
+    text-align: center;
+  }
+
+  .toolbar-room-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-top: 20px;
+    padding-bottom: 10px;
+    .toolbar-icon {
+      margin-bottom: 20px;
+    }
+    border-bottom: 1px solid #dbdbdf;
+  }
+  .toolbar-menu {
+    .ant-collapse-item {
+      .ant-collapse-header {
+        font-size: 16px;
+        font-weight: 500;
+      }
+    }
+  }
+}
