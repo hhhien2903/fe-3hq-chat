@@ -1,0 +1,16 @@
+.room-list-collapse {
+  // position: relative;
+  // overflow-y: scroll;
+  // height: calc(100vh - 70px);
+  .ant-collapse-content-box {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+  }
+
+  .ant-collapse-header {
+    padding-bottom: 0px !important;
+  }
+}
+.room-list {
+  padding: 0px 3px;
+}

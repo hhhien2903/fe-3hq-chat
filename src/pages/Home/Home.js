@@ -4,7 +4,14 @@ import LeftSidebar from '../../components/LeftSidebar/LeftSidebar';
 import imgWelcome2 from '../../assets/images/home2.jpg';
 import imgWelcome3 from '../../assets/images/home3.jpg';
 import imgWelcome4 from '../../assets/images/home4.jpg';
+import { AuthContext } from '../../contexts/AuthProvider';
+import { useContext } from 'react';
+import { firebase } from '../../config/firebase';
 const Home = () => {
+  const { user } = useContext(AuthContext);
+  const token = firebase.auth().currentUser.getIdToken();
+  console.log(token);
+  console.log(user);
   const contentStyle = {
     height: '80vh',
     width: 'auto',

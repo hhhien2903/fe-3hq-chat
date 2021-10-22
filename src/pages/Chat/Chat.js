@@ -1,17 +1,21 @@
 import { Col, Row } from 'antd';
-import './Chat.scss';
+import ChatWindow from '../../components/ChatWindow/ChatWindow';
 import LeftSidebar from '../../components/LeftSidebar/LeftSidebar';
+import RoomList from '../../components/RoomList/RoomList';
+import TopLeftBar from '../../components/TopLeftBar/TopLeftBar';
+import './Chat.scss';
 const Chat = () => {
   return (
-    <Row style={{ height: '100vh' }} className="chat">
-      <Col className="sidebar" span={1}>
+    <Row className="chat">
+      <Col className="sidebar" sm={2} lg={1}>
         <LeftSidebar />
       </Col>
-      <Col className="chat-list-container" span={8}>
-        <h1>Conversation List</h1>
+      <Col className="room-container" sm={6} lg={5}>
+        <TopLeftBar />
+        <RoomList />
       </Col>
-      <Col className="chat-message-container" span={15}>
-        <h1>Message list</h1>
+      <Col className="chat-container" sm={16} lg={18}>
+        <ChatWindow />
       </Col>
     </Row>
   );
