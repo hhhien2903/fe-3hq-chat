@@ -1,0 +1,33 @@
+.room {
+  &.content {
+    height: 70px;
+    padding: 5px 10px;
+    display: flex;
+    border-radius: 8px;
+  }
+  &.title {
+    font-size: 18px;
+    padding: 5px 0px 0px 8px;
+    flex: 3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  &.icon {
+    align-self: center;
+    flex: initial;
+  }
+
+  &.content:hover {
+    background-color: rgb(244, 245, 247);
+  }
+  &.content {
+    cursor: pointer;
+  }
+  &.active {
+    // background-color: rgb(229, 239, 255);
+    background-color: rgb(244, 245, 247);
+  }
+}

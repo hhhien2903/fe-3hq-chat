@@ -13,7 +13,7 @@ axiosClient.interceptors.request.use(async (config) => {
   // Handle token here ..
   const currentUser = firebase.auth().currentUser;
   if (currentUser) {
-    const token = await currentUser.getIdToken();
+    let token = await currentUser.getIdToken();
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
