@@ -1,5 +1,6 @@
 import { Col, Row } from 'antd';
 import LeftSidebar from '../../components/LeftSidebar/LeftSidebar';
+import TopLeftBar from '../../components/TopLeftBar/TopLeftBar';
 const Contact = () => {
   return (
     <Row style={{ height: '100vh' }} className="contact">
@@ -7,6 +8,7 @@ const Contact = () => {
         <LeftSidebar />
       </Col>
       <Col className="contact-list-container" span={8}>
+        <TopLeftBar />
         <h1>Contact List</h1>
       </Col>
       <Col className="chat-message-container" span={15}>
