@@ -21,9 +21,9 @@
     "socket.io-client": "2.4.0"
   },
   "scripts": {
-    "start:dev": "env-cmd -f ./src/config/envs/.env.development react-scripts start",
-    "start:prod": "env-cmd -f ./src/config/envs/.env.production react-scripts start",
-    "build:prod": "env-cmd -f ./src/config/envs/.env.production react-scripts build",
+    "start:dev": "env-cmd -f ./src/config/envs/development.env react-scripts start",
+    "start:prod": "env-cmd -f ./src/config/envs/production.env react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
