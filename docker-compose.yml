@@ -1,9 +1,0 @@
-version: "3.8"
-
-services:
-  app:
-    container_name: 3hq-production
-    image: 3hq-production
-    build:
-      context: .
-      target: production
