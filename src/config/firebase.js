@@ -14,4 +14,7 @@ const providers = {
   googleProvider: new firebase.auth.GoogleAuthProvider(),
   phoneProvider: new firebase.auth.PhoneAuthProvider(),
 };
+providers.googleProvider.setCustomParameters({
+  prompt: 'select_account',
+});
 export { firebaseAuth, providers, firebase };

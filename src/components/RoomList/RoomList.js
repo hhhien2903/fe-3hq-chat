@@ -1,5 +1,5 @@
 import { Collapse } from 'antd';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import SimpleBar from 'simplebar-react';
 import roomApi from '../../api/roomApi';
 import userApi from '../../api/userApi';
@@ -8,33 +8,8 @@ import { AuthContext } from '../../contexts/AuthProvider';
 import RoomListItem from '../RoomListItem/RoomListItem';
 import './RoomList.scss';
 const RoomList = () => {
-  // const user = {
-  //   _id: 'gdxADMsRd2RhhdgCtPwhrbd9DfA3',
-  //   friends: [],
-  //   isActive: true,
-  //   avatar: 'https://ui-avatars.com/api/?name=Hiển',
-  //   contact: 'mr.bin258456@gmail.com',
-  //   fullName: 'Hiển',
-  //   dayOfBirth: '11/10/2005',
-  //   gender: true,
-  // };
-
-  // const rooms = [
-  //   {
-  //     _id: '6167186347432a213c4f7f82',
-  //     isCloud: true,
-  //     members: ['gdxADMsRd2RhhdgCtPwhrbd9DfA3'],
-  //     isPinned: false,
-  //     title: 'Cloud của tôi',
-  //     avatarUrl: 'https://3hq-chat.s3.ap-southeast-1.amazonaws.com/2_1622800570007_369788.jpg',
-  //   },
-  // ];
-
-  //
-  //
   const { user } = useContext(AuthContext);
-  const [rooms, setRooms] = useState([]);
-  const { currentRoom, setCurrentRoom } = useContext(AppContext);
+  const { currentRoom, setCurrentRoom, rooms, setRooms } = useContext(AppContext);
   useEffect(() => {
     const getRooms = async () => {
       try {
@@ -67,9 +42,16 @@ const RoomList = () => {
     getRooms();
   }, []);
 
-  const handleSelectedRoom = (room) => {
-    setCurrentRoom(room);
+  const handleSelectedRoom = async (room) => {
+    try {
+      let roomDetail = await roomApi.getRoomById(room._id);
+      room = { ...room, members: roomDetail.members };
+      setCurrentRoom(room);
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   const setRoomClassName = (index) => {
     if (rooms[index]._id === currentRoom?._id) {
       return 'room content active';

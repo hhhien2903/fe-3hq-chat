@@ -50,7 +50,7 @@ const TopLeftBar = () => {
         </Col>
         <Col sm={10} lg={6}>
           <Row justify="end">
-            <AiOutlineUserAdd className="btn add-friend" size={33} color="#394E60" />
+            {/* <AiOutlineUserAdd className="btn add-friend" size={33} color="#394E60" /> */}
             <AiOutlineUsergroupAdd
               onClick={showCreateRoomModal}
               className="btn create-group"
