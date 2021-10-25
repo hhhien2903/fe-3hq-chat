@@ -1,9 +1,21 @@
-import { Alert, Avatar, Button, Col, Image, Input, Row, Tooltip, Typography, Upload } from 'antd';
+import {
+  Alert,
+  Avatar,
+  Button,
+  Col,
+  Image,
+  Input,
+  Row,
+  Tooltip,
+  Typography,
+  Upload,
+  message,
+} from 'antd';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { AiOutlineInfoCircle, AiOutlineSearch, AiOutlineUserAdd } from 'react-icons/ai';
-import { FaRegFileImage, FaRegSmile } from 'react-icons/fa';
+import { FaRegFileImage, FaRegFileVideo, FaRegSmile } from 'react-icons/fa';
 import { ImAttachment } from 'react-icons/im';
 import { RiSendPlaneFill } from 'react-icons/ri';
 import { AppContext } from '../../contexts/AppProvider';
@@ -11,9 +23,10 @@ import Message from '../Message/Message';
 import RoomToolbar from '../RoomToolbar/RoomToolbar';
 import './ChatWindow.scss';
 import SimpleBar from 'simplebar-react';
-import moment from 'moment';
 import { AuthContext } from '../../contexts/AuthProvider';
-
+import MessageType from '../../enums/messageType';
+import FormData from 'form-data';
+import userApi from '../../api/userApi';
 function ChatWindow() {
   const { currentRoom, socket } = useContext(AppContext);
   const { user } = useContext(AuthContext);
@@ -22,11 +35,13 @@ function ChatWindow() {
   const [showEmojis, setShowEmojis] = useState(false);
   const [cursorPosition, setCursorPosition] = useState();
   const [roomMessages, setRoomMessages] = useState([]);
+  const inputRef = useRef();
+  const chatBoxScrollRef = useRef();
 
-  const inputRef = useRef(null);
   const handleActiveToolbar = () => {
     setActiveToolbar(!activeToolbar);
   };
+
   const addEmoji = (emoji) => {
     const ref = inputRef.current;
     ref.focus();
@@ -52,8 +67,16 @@ function ChatWindow() {
   }, [cursorPosition]);
 
   useEffect(() => {
+    chatBoxScrollRef.current?.scrollIntoView({
+      behavior: 'auto',
+      block: 'nearest',
+    });
+  }, [roomMessages]);
+
+  useEffect(() => {
     if (socket && currentRoom) {
-      socket.on('msgToClient', (message) => {
+      socket.once('receive', (message) => {
+        console.log(message);
         setRoomMessages([...roomMessages, message]);
       });
     }
@@ -61,18 +84,22 @@ function ChatWindow() {
 
   useEffect(() => {
     if (socket && currentRoom) {
-      socket.emit('joinRoom', currentRoom._id);
-      socket.on('joinedRoom', (data) => {
+      socket.emit('joinRoom', { roomId: currentRoom._id });
+      socket.once('joinedRoom', (data) => {
         console.log('join room', data);
+      });
+      socket.emit('loadAllMessage', { roomId: currentRoom._id });
+      socket.once('receiveAllMessage', (data) => {
+        console.log('receiveAllMessage', data);
+        setRoomMessages(data);
       });
     }
 
     const leaveRoomEvent = () => {
-      socket.emit('leaveRoom', currentRoom._id);
-      socket.on('leftRoom', (data) => {
+      socket.emit('leaveRoom', { roomId: currentRoom._id });
+      socket.once('leftRoom', (data) => {
         console.log('left room', data);
       });
-      setRoomMessages([]);
     };
 
     return () => {
@@ -83,22 +110,76 @@ function ChatWindow() {
   }, [currentRoom]);
 
   const handleSendTextMessage = () => {
-    let sendMessageData = {
-      messageType: 'text',
-      user: {
-        userId: user._id,
-        avatar: user.avatar,
-      },
-      room: currentRoom._id,
+    const sendMessageData = {
+      userId: user._id,
+      roomId: currentRoom._id,
       content: inputMessage,
-      createdAt: moment().toISOString(),
+      messageType: MessageType.TEXT,
     };
 
     if (socket) {
-      socket.emit('msgToServer', sendMessageData);
+      socket.emit('send', sendMessageData);
       setInputMessage('');
       setShowEmojis(false);
     }
+  };
+
+  const handleUploadImage = async (fileData) => {
+    const formData = new FormData();
+    formData.append('file', fileData.file);
+    try {
+      const imageData = await userApi.uploadFile(formData);
+      const sendMessageData = {
+        userId: user._id,
+        roomId: currentRoom._id,
+        content: imageData.url,
+        messageType: MessageType.IMAGE,
+      };
+      if (socket) {
+        socket.emit('send', sendMessageData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleUploadVideo = async (fileData) => {
+    const formData = new FormData();
+    formData.append('file', fileData.file);
+    try {
+      const videoData = await userApi.uploadFile(formData);
+      const sendMessageData = {
+        userId: user._id,
+        roomId: currentRoom._id,
+        content: videoData.url,
+        messageType: MessageType.VIDEO,
+      };
+      if (socket) {
+        socket.emit('send', sendMessageData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const checkFileIsImage = {
+    beforeUpload: (file) => {
+      if (!file['type'].includes('image')) {
+        message.error(`${file.name} không phải là tệp hình ảnh`);
+        return false;
+      }
+      return true;
+    },
+  };
+
+  const checkFileIsVideo = {
+    beforeUpload: (file) => {
+      if (!file['type'].includes('video')) {
+        message.error(`${file.name} không phải là tệp video`);
+        return false;
+      }
+      return true;
+    },
   };
   return (
     <>
@@ -134,19 +215,38 @@ function ChatWindow() {
                   </Row>
                 </Col>
               </Row>
-              <div className="chat-box scrollable">
+              <div className="chat-box">
                 <SimpleBar style={{ maxHeight: '100%' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', paddingTop: '20px' }}>
-                    {roomMessages.map((roomMessage, index) => (
-                      <Message key={index} message={roomMessage} />
+                    {roomMessages.map((roomMessage) => (
+                      <Message key={roomMessage._id} message={roomMessage} />
                     ))}
                   </div>
+                  <div ref={chatBoxScrollRef} />
                 </SimpleBar>
               </div>
               <Row className="chat-menu" align="middle">
                 <Tooltip title="Gửi Hình Ảnh">
-                  <Upload previewFile={false} progress={false}>
+                  <Upload
+                    {...checkFileIsImage}
+                    previewFile={false}
+                    multiple
+                    customRequest={handleUploadImage}
+                    progress={false}
+                  >
                     <Button id="btn-send-image" icon={<FaRegFileImage size={23} />} />
+                  </Upload>
+                </Tooltip>
+                <Tooltip title="Gửi Video">
+                  <Upload
+                    {...checkFileIsVideo}
+                    previewFile={false}
+                    multiple
+                    customRequest={handleUploadVideo}
+                    progress={false}
+                    previewFile={false}
+                  >
+                    <Button id="btn-send-image" icon={<FaRegFileVideo size={23} />} />
                   </Upload>
                 </Tooltip>
                 <Tooltip title="Gửi Tệp Tin">

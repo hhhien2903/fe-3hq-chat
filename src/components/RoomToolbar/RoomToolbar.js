@@ -1,11 +1,14 @@
 import { Avatar, Button, Col, Collapse, Image, Row, Typography } from 'antd';
 import { useContext } from 'react';
 import { AppContext } from '../../contexts/AppProvider';
+import { AuthContext } from '../../contexts/AuthProvider';
 import GroupMemberItem from '../GroupMemberItem/GroupMemberItem';
 import './RoomToolbar.scss';
+import { BiPencil, BiExit } from 'react-icons/bi';
 const { Panel } = Collapse;
 function RoomToolbar() {
   const { currentRoom } = useContext(AppContext);
+  const { user } = useContext(AuthContext);
   return (
     <>
       <Row className="toolbar">
@@ -27,15 +30,32 @@ function RoomToolbar() {
                   className="toolbar-room-customize"
                   header="Tuỳ Chỉnh Cuộc Trò Chuyện"
                   key="1"
-                ></Panel>
+                >
+                  {currentRoom.creatorId === user._id && (
+                    <Button
+                      type="text"
+                      size={'large'}
+                      icon={<BiPencil size={18} style={{ verticalAlign: 'sub' }} />}
+                    >
+                      <p>Đổi tên cuộc trò chuyện</p>
+                    </Button>
+                  )}
+                  <Button
+                    type="text"
+                    size={'large'}
+                    icon={<BiExit size={18} style={{ verticalAlign: 'sub' }} />}
+                  >
+                    <p>Rời khỏi cuộc trò chuyện</p>
+                  </Button>
+                </Panel>
 
                 <Panel
                   className="toolbar-room-member"
                   header={`Thành Viên Nhóm (${currentRoom.members.length})`}
                   key="2"
                 >
-                  {currentRoom.members.map((user, index) => (
-                    <GroupMemberItem key={index} user={user} />
+                  {currentRoom.members.map((member) => (
+                    <GroupMemberItem key={member._id} member={member} />
                   ))}
                 </Panel>
               </>
