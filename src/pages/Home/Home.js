@@ -21,7 +21,7 @@ const Home = () => {
 
   return (
     <Row style={{ height: '100vh' }} className="home">
-      <Col className="sidebar" span={1}>
+      <Col className="sidebar" sm={2} lg={1}>
         <LeftSidebar />
       </Col>
       <Col className="home-container" span={23}>
