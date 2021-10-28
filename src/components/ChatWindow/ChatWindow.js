@@ -12,6 +12,7 @@ import RoomToolbar from '../RoomToolbar/RoomToolbar';
 import './ChatWindow.scss';
 import SimpleBar from 'simplebar-react';
 import moment from 'moment';
+import React from 'react';
 import { AuthContext } from '../../contexts/AuthProvider';
 
 function ChatWindow() {

@@ -3,7 +3,7 @@ import LeftSidebar from '../../components/LeftSidebar/LeftSidebar';
 import TopLeftBar from '../../components/TopLeftBar/TopLeftBar';
 const Contact = () => {
   return (
-    <Row style={{ height: '100vh' }} className="contact">
+    <Row style={{ height: '100vh'}} className="contact">
       <Col className="sidebar" span={1}>
         <LeftSidebar />
       </Col>
