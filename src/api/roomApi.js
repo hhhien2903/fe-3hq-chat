@@ -10,6 +10,10 @@ const roomApi = {
     let url = `/${ROOM_ENDPOINT}/${roomId}`;
     return axiosClient.get(url);
   },
+  getRoomsByUser: () => {
+    let url = `/${ROOM_ENDPOINT}`;
+    return axiosClient.get(url);
+  },
 };
 
 export default roomApi;

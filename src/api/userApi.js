@@ -18,6 +18,10 @@ const userApi = {
     const url = `/${USER_ENDPOINT}/upload/avatar`;
     return axiosClientFormData.put(url, data);
   },
+  getFriendList: () => {
+    const url = `/${USER_ENDPOINT}/friend/list`;
+    return axiosClient.get(url);
+  },
 };
 
 export default userApi;

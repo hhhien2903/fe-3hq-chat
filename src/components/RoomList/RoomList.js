@@ -2,7 +2,6 @@ import { Collapse } from 'antd';
 import { useContext, useEffect } from 'react';
 import SimpleBar from 'simplebar-react';
 import roomApi from '../../api/roomApi';
-import userApi from '../../api/userApi';
 import { AppContext } from '../../contexts/AppProvider';
 import { AuthContext } from '../../contexts/AuthProvider';
 import RoomListItem from '../RoomListItem/RoomListItem';
@@ -13,43 +12,20 @@ const RoomList = () => {
   useEffect(() => {
     const getRooms = async () => {
       try {
-        let roomsData = await roomApi.getRoomsByUserId(user._id);
-        let rooms = await Promise.all(
-          roomsData.map(async (room) => {
-            if (room?.title) {
-              return { ...room, avatarUrl: room.avatarUrl };
-            } else {
-              let friendId = room.members.find((member) => member !== user._id);
-              try {
-                let friendData = await userApi.getUserById(friendId);
-                return { ...room, title: friendData.fullName, avatarUrl: friendData.avatar };
-              } catch (error) {
-                console.log(error);
-              }
-            }
-          }),
-        );
-        let isCloudRoom = rooms.find((room) => room.isCloud);
-        rooms = rooms.filter((room) => !room.isCloud);
-        rooms.unshift(isCloudRoom);
-        setRooms(rooms);
-        console.log(rooms);
+        const roomsData = await roomApi.getRoomsByUser();
+        setRooms(roomsData);
+
+        console.log(roomsData);
       } catch (error) {
         console.log(error);
       }
     };
 
     getRooms();
-  }, []);
+  }, [setRooms, user]);
 
-  const handleSelectedRoom = async (room) => {
-    try {
-      let roomDetail = await roomApi.getRoomById(room._id);
-      room = { ...room, members: roomDetail.members };
-      setCurrentRoom(room);
-    } catch (error) {
-      console.log(error);
-    }
+  const handleSelectedRoom = (room) => {
+    setCurrentRoom(room);
   };
 
   const setRoomClassName = (index) => {
@@ -60,6 +36,30 @@ const RoomList = () => {
     }
   };
 
+  // const roomListTest = [
+  //   {
+  //     createdAt: '2021-10-26T13:47:13.342Z',
+  //     isGroup: true,
+  //     members: [
+  //       {
+  //         avatar: 'https://ui-avatars.com/api/?name=Hiển',
+  //         fullName: 'Hiển',
+  //         isActive: true,
+  //         _id: 'gdxADMsRd2RhhdgCtPwhrbd9DfA3',
+  //       },
+  //       {
+  //         avatar: 'https://ui-avatars.com/api/?name=Hậu',
+  //         fullName: 'Hậu',
+  //         isActive: true,
+  //         _id: '37L37Zt9a3VO9TegCmXmBLIOC4G3',
+  //       },
+  //     ],
+  //     creatorId: 'gdxADMsRd2RhhdgCtPwhrbd9DfA3',
+  //     title: 'Group ne hihi',
+  //     updatedAt: '2021-10-26T13:47:13.342Z',
+  //     _id: '617806e11ae09e0023ce66c6',
+  //   },
+  // ];
   return (
     <SimpleBar style={{ maxHeight: '100vh' }}>
       <Collapse className="room-list-collapse" ghost defaultActiveKey={'1'}>
