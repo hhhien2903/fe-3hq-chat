@@ -6,11 +6,12 @@
     border-radius: 8px;
   }
   &.title {
+    height: fit-content;
     font-size: 18px;
     padding: 5px 0px 0px 8px;
-    flex: 3;
+    flex: 1;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 1;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -18,6 +19,7 @@
   &.icon {
     align-self: center;
     flex: initial;
+    width: 60px;
   }
 
   &.content:hover {
