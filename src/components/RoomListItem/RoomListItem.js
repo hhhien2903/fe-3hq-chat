@@ -8,7 +8,18 @@ const RoomListItem = (props) => {
     <>
       <div className={cName} onClick={() => handleSelectedRoom(room)}>
         <div className="room icon">
-          <Avatar size={55} icon={<Image preview={false} src={room.avatarUrl} />} />
+          {!room.avatarUrl ? (
+            room.members.length > 1 ? (
+              <Avatar.Group size={38}>
+                <Avatar style={{ marginTop: '15px' }} src={room.members[0].avatar} />
+                <Avatar style={{ marginLeft: '-18px' }} src={room.members[1].avatar} />
+              </Avatar.Group>
+            ) : (
+              <Avatar size={55} icon={<Image preview={false} src={room.members[0].avatar} />} />
+            )
+          ) : (
+            <Avatar size={55} icon={<Image preview={false} src={room.avatarUrl} />} />
+          )}
         </div>
         <div className="room title">
           <Typography.Text>{room.title}</Typography.Text>
