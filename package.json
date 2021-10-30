@@ -26,8 +26,8 @@
     "socket.io-client": "2.4.0"
   },
   "scripts": {
-    "start:dev": "env-cmd -f ./src/config/envs/development.env react-scripts start",
-    "start:prod": "env-cmd -f ./src/config/envs/production.env react-scripts start",
+    "start:dev": "env-cmd -f ./src/config/envs/development.env react-app-rewired start",
+    "start:prod": "env-cmd -f ./src/config/envs/production.env react-app-rewired start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -49,5 +49,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "react-app-rewired": "^2.1.8"
   }
 }
