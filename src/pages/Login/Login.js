@@ -5,7 +5,6 @@ import './Login.scss';
 import LoginOptions from '../../components/LoginOption/LoginOption';
 import LoginPhone from '../../components/LoginPhone/LoginPhone';
 import { IoArrowBack } from 'react-icons/io5';
-import { Helmet } from 'react-helmet';
 
 const Login = () => {
   const [activeComponent, setActiveComponent] = useState('default');
@@ -18,14 +17,6 @@ const Login = () => {
       style={{ backgroundImage: `url(${background})`, backgroundRepeat: 'no-repeat' }}
     >
       <Col className="login-container" span={9}>
-        <Helmet>
-          <meta charSet="utf-8" />
-          <meta name="description" content="3HQ Chat Login" />
-          <meta name="keywords" id="keywords" content="3HQ, 3HQ Web Chat, 3HQ Chat Online, 3HQ Chat Login" />
-          <meta name="author" content="3HQ" />
-          <title>Login</title>
-          <link rel="canonical" href="https://goosedev.me/login" />
-        </Helmet>
         <Row justify="center" className="login-content">
           {activeComponent !== 'default' && (
             <IoArrowBack
