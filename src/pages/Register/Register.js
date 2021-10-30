@@ -9,6 +9,7 @@ import './Register.scss';
 import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthProvider';
 import { Link, useHistory } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 const Register = () => {
   const history = useHistory();
@@ -53,6 +54,18 @@ const Register = () => {
       style={{ backgroundImage: `url(${background})`, backgroundRepeat: 'no-repeat' }}
     >
       <Col className="register-container" span={9}>
+        <Helmet>
+          <meta charSet="utf-8" />
+          <meta name="description" content="3HQ Chat Login" />
+          <meta
+            name="keywords"
+            id="keywords"
+            content="3HQ, 3HQ Web Chat, 3HQ Chat Online, 3HQ Chat Login, 3HQ Register"
+          />
+          <meta name="author" content="3HQ" />
+          <title>Register</title>
+          <link rel="canonical" href="https://goosedev.me/login" />
+        </Helmet>
         <Row justify="center" className="register-content">
           <Col className="register-header" span={24}>
             <AntImage id="logo" preview={false} width={80} height={80} src="/favicon.ico" />
