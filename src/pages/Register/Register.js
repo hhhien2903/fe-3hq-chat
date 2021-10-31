@@ -90,7 +90,7 @@ const Register = () => {
                   },
                 ]}
               >
-                <Select placeholder="Vui lòng chọn giới tính">
+                <Select placeholder="Vui lòng chọn giới tính" >
                   <Option value={true}>Nam</Option>
                   <Option value={false}>Nữ</Option>
                 </Select>

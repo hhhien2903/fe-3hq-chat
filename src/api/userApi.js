@@ -10,6 +10,10 @@ const userApi = {
     const url = `/${USER_ENDPOINT}/`;
     return axiosClient.post(url, data);
   },
+  updateUser: (data)=>{
+    const url = `/${USER_ENDPOINT}`;
+    return axiosClient.put(url, data);
+  },
   uploadFile: (data) => {
     let url = `/${USER_ENDPOINT}/upload/file`;
     return axiosClientFormData.post(url, data);
