@@ -1,12 +1,18 @@
-import { Row, Input, Col, Modal, Form, Button } from 'antd';
-import React, { useState } from 'react';
+import { Button, Col, Form, Input, Modal, Row, Select, Spin } from 'antd';
+import React, { useContext, useState } from 'react';
+import { AiOutlineSearch, AiOutlineUsergroupAdd } from 'react-icons/ai';
 import './TopLeftBar.scss';
-import { AiOutlineSearch, AiOutlineUsergroupAdd, AiOutlineUserAdd } from 'react-icons/ai';
+import debounce from 'lodash/debounce';
+import { AuthContext } from '../../contexts/AuthProvider';
+import userApi from '../../api/userApi';
 const TopLeftBar = () => {
   const [isCreateRoomModalVisible, setIsCreateRoomModalVisible] = useState(false);
   const [formCreateRoom] = Form.useForm();
+  const [friendList, setFriendList] = React.useState([]);
+  const { user } = useContext(AuthContext);
   const showCreateRoomModal = () => {
     setIsCreateRoomModalVisible(true);
+    getFriendList();
   };
 
   const handleCreateRoomConfirm = () => {
@@ -14,6 +20,15 @@ const TopLeftBar = () => {
     console.log(roomTitle, roomcac);
     formCreateRoom.resetFields();
     setIsCreateRoomModalVisible(false);
+  };
+
+  const getFriendList = async () => {
+    try {
+      const res = await userApi.getFriendList(user);
+      console.log(res.friends);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -35,10 +50,24 @@ const TopLeftBar = () => {
           <Form.Item name="roomTitle" label="Tên cuộc trò chuyện">
             <Input placeholder="Tên cuộc trò chuyện" />
           </Form.Item>
+          <Form.Item label="Thêm bạn bè vào cuộc trò chuyện">
+            {/* <DebounceSelect
+              mode="multiple"
+              value={value}
+              placeholder="Select users"
+              fetchOptions={() => fetchUserList(user)}
+              onChange={(newValue) => {
+                setValue(newValue);
+              }}
+              style={{
+                width: '100%',
+              }}
+            /> */}
+          </Form.Item>
         </Form>
       </Modal>
-      <Row justify="end" align="middle" className="top-left-container">
-        <Col sm={14} lg={18}>
+      <Row wrap={false} align="middle" className="top-left-container">
+        <Col flex={1}>
           <Row className="search-bar" justify="center">
             <Input
               className="input-search"
@@ -48,9 +77,9 @@ const TopLeftBar = () => {
             />
           </Row>
         </Col>
-        <Col sm={10} lg={6}>
-          <Row justify="end">
-            <AiOutlineUserAdd className="btn add-friend" size={33} color="#394E60" />
+        <Col flex="initial">
+          <Row>
+            {/* <AiOutlineUserAdd className="btn add-friend" size={33} color="#394E60" /> */}
             <AiOutlineUsergroupAdd
               onClick={showCreateRoomModal}
               className="btn create-group"

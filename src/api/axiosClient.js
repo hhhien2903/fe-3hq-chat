@@ -32,22 +32,35 @@ axiosClient.interceptors.response.use(
   },
 );
 
-
 const axiosClientFormData = axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL,
   headers: {
-    'content-type': 'application/form-data',
+    'content-type': 'multipart/form-data',
   },
-  paramsSerializer:(params) => qs.stringify(params),
+  paramsSerializer: (params) => qs.stringify(params),
 });
+
 axiosClientFormData.interceptors.request.use(async (config) => {
   // Handle token here ..
-  const currentUser = firebase.auth().currentUser;  
+  const currentUser = firebase.auth().currentUser;
   if (currentUser) {
     let token = await currentUser.getIdToken();
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
+
+axiosClientFormData.interceptors.response.use(
+  (response) => {
+    if (response && response.data) {
+      return response.data;
+    }
+    return response;
+  },
+  (error) => {
+    // Handle errors
+    throw error.toJSON();
+  },
+);
 
 export { axiosClient, axiosClientFormData };

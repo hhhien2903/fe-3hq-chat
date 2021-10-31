@@ -4,6 +4,7 @@ import LeftSidebar from '../../components/LeftSidebar/LeftSidebar';
 import RoomList from '../../components/RoomList/RoomList';
 import TopLeftBar from '../../components/TopLeftBar/TopLeftBar';
 import './Chat.scss';
+
 const Chat = () => {
   return (
     <Row className="chat">

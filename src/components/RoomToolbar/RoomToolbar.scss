@@ -24,5 +24,25 @@
         font-weight: 500;
       }
     }
+    .toolbar-room-customize {
+      .ant-btn {
+        width: 100%;
+        text-align: left;
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+      }
+      .ant-btn:hover {
+        border-color: #d7deeb;
+        color: #000000;
+      }
+      p {
+        padding: 0;
+        margin: 0;
+        display: inline;
+        margin-left: 10px;
+        font-size: 15px;
+      }
+    }
   }
 }
