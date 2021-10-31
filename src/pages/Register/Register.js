@@ -1,14 +1,25 @@
-import { Col, Row, Input, Button, Form, Select, DatePicker, notification } from 'antd';
-import { Image as AntImage } from 'antd';
-import moment from 'moment';
-import background from '../../assets/images/backgound.jpg';
+import {
+  Button,
+  Col,
+  DatePicker,
+  Form,
+  Image as AntImage,
+  Input,
+  notification,
+  Row,
+  Select,
+} from 'antd';
 import localeVN from 'antd/es/date-picker/locale/vi_VN';
-import userApi from '../../api/userApi';
+import moment from 'moment';
 import 'moment/locale/vi';
-import './Register.scss';
 import { useContext } from 'react';
+import userApi from '../../api/userApi';
+import background from '../../assets/images/backgound.jpg';
 import { AuthContext } from '../../contexts/AuthProvider';
 import { Link, useHistory } from 'react-router-dom';
+import './Register.scss';
+import { firebaseAuth } from '../../config/firebase';
+
 const Register = () => {
   const history = useHistory();
   const { Option } = Select;
@@ -90,7 +101,7 @@ const Register = () => {
                   },
                 ]}
               >
-                <Select placeholder="Vui lòng chọn giới tính">
+                <Select placeholder="Vui lòng chọn giới tính" >
                   <Option value={true}>Nam</Option>
                   <Option value={false}>Nữ</Option>
                 </Select>
@@ -122,11 +133,18 @@ const Register = () => {
                 </Button>
               </Form.Item>
               <Form.Item style={{ marginTop: '30px' }}>
-                <Link to="/logout">
-                  <Button style={{ padding: '0px 80px' }} shape="round" block type="default">
-                    Thoát
-                  </Button>
-                </Link>
+                <Button
+                  onClick={() => {
+                    firebaseAuth.signOut();
+                    history.push('/login');
+                  }}
+                  style={{ padding: '0px 80px' }}
+                  shape="round"
+                  block
+                  type="default"
+                >
+                  Thoát
+                </Button>
               </Form.Item>
             </Form>
           </Col>

@@ -1,19 +1,18 @@
-import { Col, Row, Carousel } from 'antd';
-import './Home.scss';
-import LeftSidebar from '../../components/LeftSidebar/LeftSidebar';
+import { Carousel, Col, Row } from 'antd';
+import { useContext, useEffect } from 'react';
 import imgWelcome2 from '../../assets/images/home2.jpg';
 import imgWelcome3 from '../../assets/images/home3.jpg';
 import imgWelcome4 from '../../assets/images/home4.jpg';
-import { AuthContext } from '../../contexts/AuthProvider';
-import { AppContext } from '../../contexts/AppProvider';
-import { useContext } from 'react';
+import LeftSidebar from '../../components/LeftSidebar/LeftSidebar';
 import { firebase } from '../../config/firebase';
-import { useEffect } from 'react';
+import { AppContext } from '../../contexts/AppProvider';
+import { AuthContext } from '../../contexts/AuthProvider';
+import './Home.scss';
 
 const Home = () => {
   const { user } = useContext(AuthContext);
-
-  const token = firebase.auth().currentUser.getIdToken();
+  const { socket } = useContext(AppContext);
+  const token = firebase.auth().currentUser?.getIdToken();
   console.log(token);
   console.log(user);
   const contentStyle = {
@@ -22,6 +21,12 @@ const Home = () => {
     marginLeft: 'auto',
     marginRight: 'auto',
   };
+  useEffect(() => {
+    console.log('hello');
+    if (socket) {
+      socket.emit('userLogin', { userId: user._id });
+    }
+  }, []);
 
   return (
     <Row style={{ height: '100vh' }} className="home">

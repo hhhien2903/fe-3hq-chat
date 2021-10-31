@@ -10,6 +10,9 @@ import {
   Tooltip,
   Typography,
   Upload,
+  Form,
+  Select,
+  Modal,
 } from 'antd';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
@@ -39,6 +42,9 @@ function ChatWindow() {
   const [roomMessages, setRoomMessages] = useState([]);
   const inputRef = useRef();
   const chatBoxScrollRef = useRef();
+  const [isAddFriendToRoomModalVisible, setIsAddFriendToRoomModalVisible] = useState(false);
+  const [formAddFriendToRoom] = Form.useForm();
+  const [friendList, setFriendList] = useState([]);
   const handleActiveToolbar = () => {
     setActiveToolbar(!activeToolbar);
   };
@@ -67,13 +73,6 @@ function ChatWindow() {
     getCursorPositionInputChat();
   }, [cursorPosition]);
 
-  // useEffect(() => {
-  //   chatBoxScrollRef.current?.scrollIntoView({
-  //     behavior: 'auto',
-  //     block: 'end',
-  //   });
-  // }, [roomMessages, currentRoom]);
-
   useEffect(() => {
     if (socket && currentRoom) {
       socket.on('receive', (message) => {
@@ -86,15 +85,15 @@ function ChatWindow() {
   }, [roomMessages, socket, currentRoom]);
 
   useEffect(() => {
-    chatBoxScrollRef.current?.scrollToBottom();
     if (socket && currentRoom) {
-      socket.emit('joinRoom', { roomId: currentRoom._id });
+      socket.emit('joinRoom', { roomId: currentRoom._id, userId: user._id });
       socket.once('joinedRoom', (data) => {
         console.log('join room', data);
       });
-      socket.emit('loadAllMessage', { roomId: currentRoom._id });
-      socket.once('receiveAllMessage', (data) => {
-        setRoomMessages(data);
+
+      socket.once('receiveAllMessage', async (data) => {
+        await setRoomMessages(data);
+        chatBoxScrollRef.current?.scrollToBottom();
         console.log('receiveAllMessage', data);
       });
     }
@@ -111,7 +110,7 @@ function ChatWindow() {
     return () => {
       leaveRoomEvent();
     };
-  }, [currentRoom, socket]);
+  }, [currentRoom]);
 
   const sendMessageToServer = (sendMessageData) => {
     if (socket) {
@@ -205,14 +204,30 @@ function ChatWindow() {
 
   const checkFileIsVideo = {
     beforeUpload: (file) => {
-      if (!file['type'].includes('video')) {
-        message.error(`${file.name} không phải là tệp video`);
+      if (!file['type'].includes('video') && !file['type'].includes('audio')) {
+        message.error(`${file.name} không phải là tệp video/audio`);
         return false;
       }
       return true;
     },
   };
 
+  const showAddFriendToRoomModal = () => {
+    setIsAddFriendToRoomModalVisible(true);
+    getFriendList();
+  };
+
+  const getFriendList = async () => {
+    try {
+      const res = await userApi.getFriendList(user);
+      setFriendList(res.friends);
+      console.log(res.friends);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleAddFriendToRoomConfirm = () => {};
   return (
     <>
       {currentRoom ? (
@@ -259,11 +274,74 @@ function ChatWindow() {
                   <Row justify="end" style={{ paddingRight: '10px' }}>
                     <AiOutlineSearch className="btn search" size={35} color="#394E60" />
                     <AiOutlineUserAdd
-                      onClick={() => chatBoxScrollRef.current.scrollToBottom()}
+                      onClick={() => showAddFriendToRoomModal()}
                       className="btn add-member"
                       size={35}
                       color="#394E60"
                     />
+                    <Modal
+                      className="model-add-friend"
+                      title="Thêm bạn bè vào cuộc trò chuyện"
+                      visible={isAddFriendToRoomModalVisible}
+                      onCancel={() => {
+                        formAddFriendToRoom.resetFields();
+                        setIsAddFriendToRoomModalVisible(false);
+                      }}
+                      footer={[
+                        <Button
+                          key="cancel"
+                          onClick={() => {
+                            formAddFriendToRoom.resetFields();
+                            setIsAddFriendToRoomModalVisible(false);
+                          }}
+                        >
+                          Huỷ
+                        </Button>,
+                        <Button
+                          key="submit"
+                          type="primary"
+                          onClick={handleAddFriendToRoomConfirm}
+                          htmlType="submit"
+                        >
+                          Xác Nhận
+                        </Button>,
+                      ]}
+                    >
+                      <Form form={formAddFriendToRoom} layout="vertical">
+                        <Form.Item
+                          rules={[
+                            {
+                              required: true,
+                              message: 'Hãy chọn ít nhất một người bạn',
+                              type: 'array',
+                              min: 1,
+                            },
+                          ]}
+                          name="selectedFriends"
+                          label="Thêm bạn bè vào cuộc trò chuyện"
+                        >
+                          <Select
+                            size="large"
+                            showSearch
+                            optionFilterProp="children"
+                            placeholder="Chọn bạn bè..."
+                            mode="multiple"
+                            style={{ height: '50px' }}
+                          >
+                            {friendList.map((friend) => (
+                              <Select.Option key={friend.contact} value={friend._id}>
+                                <Avatar
+                                  size={28}
+                                  src={friend.avatar}
+                                  style={{ marginRight: '5px' }}
+                                />
+                                {`${friend.fullName}`}
+                              </Select.Option>
+                            ))}
+                          </Select>
+                        </Form.Item>
+                      </Form>
+                    </Modal>
                     <AiOutlineInfoCircle
                       className="btn info"
                       size={35}

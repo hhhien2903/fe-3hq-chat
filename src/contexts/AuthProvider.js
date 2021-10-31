@@ -18,7 +18,6 @@ export default function AuthProvider({ children }) {
         setTimeout(() => {
           setIsLoading(false);
         }, 1000);
-
         history.push('/login');
         return;
       }
@@ -32,9 +31,21 @@ export default function AuthProvider({ children }) {
           history.push('/');
         }
       } catch (error) {
-        setIsLoading(false);
-        notification.destroy();
-        history.push('/register');
+        console.log(error);
+        if (error.status === 404) {
+          setIsLoading(false);
+          notification.destroy();
+          history.push('/register');
+        } else {
+          notification.open({
+            message: 'Hệ Thống Đang Bảo Trì',
+            description: 'Hệ thống đang bảo trì, bạn vui lòng quay lại sau',
+            duration: 10,
+          });
+          setIsLoading(false);
+          firebaseAuth.signOut();
+          history.push('/login');
+        }
       }
     });
     return () => {
