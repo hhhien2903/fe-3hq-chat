@@ -52,7 +52,7 @@ function Message(props) {
             )}
           </div>
           <div className="message-avatar">
-            <Avatar size={40} icon={<Image preview={false} src={message.userId.avatar} />} />
+            <Avatar size={40} src={message.userId.avatar} />
           </div>
           <div className="message-ago">
             <p>
@@ -63,7 +63,7 @@ function Message(props) {
       ) : (
         <div className="message">
           <div className="message-avatar">
-            <Avatar size={40} icon={<Image preview={false} src={message.userId.avatar} />} />
+            <Avatar size={40} src={message.userId.avatar} />
           </div>
           <div className="message-content">
             {currentRoom.isGroup && <p className="group-sender-name">{message.userId.fullName}</p>}

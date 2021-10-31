@@ -1,38 +1,44 @@
-import { Avatar, Image, message, notification, DatePicker } from 'antd';
 import './LeftSidebar.scss';
+import { useHistory } from 'react-router-dom';
 import { IoChatbubbleEllipses, IoPeople } from 'react-icons/io5';
 import { GoSignOut } from 'react-icons/go';
 import { Link } from 'react-router-dom';
-import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthProvider';
-
 import moment from 'moment';
 import localeVN from 'antd/es/date-picker/locale/vi_VN';
-
-import { useState } from 'react';
-import React from 'react';
-import { Modal, Form, Input, Radio, Select, Button, Upload, Tooltip, Typography } from 'antd';
+import React, { useState, useContext } from 'react';
 import {
-  EditOutlined,
-  PlusCircleOutlined,
-  CameraOutlined,
-  HighlightOutlined,
-} from '@ant-design/icons';
+  Modal,
+  Form,
+  Input,
+  Radio,
+  Select,
+  Button,
+  Upload,
+  Tooltip,
+  Typography,
+  Avatar,
+  Image,
+  message,
+  notification,
+  DatePicker,
+} from 'antd';
 import './ModalUserInfo.scss';
-import { BsFillCameraFill, FcApproval } from 'react-icons/bs';
+import { BsFillCameraFill } from 'react-icons/bs';
 import FormData from 'form-data';
 import { AppContext } from '../../contexts/AppProvider';
 import userApi from '../../api/userApi';
+import { firebaseAuth, firebase } from '../../config/firebase';
+
 const { Option } = Select;
 const { Title } = Typography;
 function LeftSidebar() {
   const { currentRoom } = useContext(AppContext);
   const { user, setUser } = useContext(AuthContext);
-
+  const history = useHistory();
+  const { setCurrentRoom, setRooms } = useContext(AppContext);
   const [editName, setEditName] = useState(user.fullName);
-
   const [editableStr, setEditableStr] = useState('This is an editable text.');
-
   const [isModalVisible, setIsModalVisible] = useState(false);
   const showModal = () => {
     setIsModalVisible(true);
@@ -75,6 +81,11 @@ function LeftSidebar() {
         };
         try {
           const res = await userApi.updateUser(data);
+          notification.open({
+            message: 'Thông báo!',
+            description: 'Cập nhật thông tin thành công',
+            duration: 5,
+          });
           setUser(res);
         } catch (error) {
           notification.open({
@@ -93,7 +104,24 @@ function LeftSidebar() {
     console.log(editName);
   };
 
-  console.log(moment(user.dayOfBirth, 'DD/MM/YYYY'));
+  const showConfirmLogoutModal = () => {
+    const confirmLogoutModal = Modal.confirm({
+      title: 'Xác Nhận',
+      content: 'Bạn có muốn đăng xuất khỏi 3HQ - Chat?',
+      okText: 'Đăng xuất',
+      okType: 'danger',
+      cancelText: 'Không',
+      onOk() {
+        firebaseAuth.signOut();
+        setCurrentRoom(null);
+        setRooms([]);
+        history.push('/login');
+      },
+      onCancel() {
+        confirmLogoutModal.destroy();
+      },
+    });
+  };
   return (
     <>
       <ul className="sidebar-container">
@@ -117,13 +145,10 @@ function LeftSidebar() {
             </span>
           </Link>
         </li>
-
-        <li className="sidebar-item setting">
-          <Link to="/logout">
-            <span className="sidebar-link">
-              <GoSignOut size={30} color="#FFFFFF" />
-            </span>
-          </Link>
+        <li onClick={showConfirmLogoutModal} className="sidebar-item setting">
+          <span className="sidebar-link">
+            <GoSignOut size={30} color="#FFFFFF" />
+          </span>
         </li>
       </ul>
       {/* <ModalUserInfo isVisible={isModalVisible}/> */}

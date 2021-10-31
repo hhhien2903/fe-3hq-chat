@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
+import roomApi from '../api/roomApi';
 
 export const AppContext = React.createContext();
 
@@ -13,13 +14,31 @@ export default function AppProvider({ children }) {
     });
     setSocket(newSocket);
   };
-
   useEffect(() => {
     setupSocket();
   }, []);
+
+  const getRoomsList = async () => {
+    try {
+      const roomsData = await roomApi.getRoomsByUser();
+      setRooms(roomsData);
+      console.log(roomsData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <AppContext.Provider
-      value={{ currentRoom, setCurrentRoom, socket, rooms, setRooms, setSocket, setupSocket }}
+      value={{
+        currentRoom,
+        setCurrentRoom,
+        socket,
+        rooms,
+        setRooms,
+        setSocket,
+        setupSocket,
+        getRoomsList,
+      }}
     >
       {children}
     </AppContext.Provider>
