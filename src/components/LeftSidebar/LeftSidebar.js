@@ -1,4 +1,4 @@
-import { Avatar, Image, message, notification ,DatePicker} from 'antd';
+import { Avatar, Image, message, notification, DatePicker } from 'antd';
 import './LeftSidebar.scss';
 import { IoChatbubbleEllipses, IoPeople } from 'react-icons/io5';
 import { GoSignOut } from 'react-icons/go';
@@ -61,9 +61,9 @@ function LeftSidebar() {
     },
   };
   console.log(user);
- 
+
   const [formUpdateUser] = Form.useForm();
-  const handleUpdate= () => {
+  const handleUpdate = () => {
     formUpdateUser
       .validateFields()
       .then(async (formValue) => {
@@ -74,7 +74,7 @@ function LeftSidebar() {
           gender: gender,
         };
         try {
-          const  res = await userApi.updateUser(data);
+          const res = await userApi.updateUser(data);
           setUser(res);
         } catch (error) {
           notification.open({
@@ -93,7 +93,7 @@ function LeftSidebar() {
     console.log(editName);
   };
 
-  console.log(moment(user.dayOfBirth, 'DD/MM/YYYY'))
+  console.log(moment(user.dayOfBirth, 'DD/MM/YYYY'));
   return (
     <>
       <ul className="sidebar-container">
@@ -178,29 +178,33 @@ function LeftSidebar() {
             </div>
             <div className="name-container-profile">
               <div className="input-edit-name">
-                  <Title 
+                <Title
                   style={{ marginLeft: '10px' }}
                   level={5}
-                  editable={{ 
+                  editable={{
                     onChange: setEditName,
                     tooltip: 'Cập nhật tên',
-                  }} 
-                    >{editName}
+                  }}
+                >
+                  {editName}
                 </Title>
               </div>
             </div>
           </div>
-          <Form 
-          form={formUpdateUser}
-          layout="vertical" 
-          style={{ gap: '10px' }}
-          initialValues={{contact: user.contact, dateOfBirth: moment(user.dayOfBirth, 'DD/MM/YYYY'), gender:user.gender}}
+          <Form
+            form={formUpdateUser}
+            layout="vertical"
+            style={{ gap: '10px' }}
+            initialValues={{
+              contact: user.contact,
+              dateOfBirth: moment(user.dayOfBirth, 'DD/MM/YYYY'),
+              gender: user.gender,
+            }}
           >
             <Form.Item
               name="contact"
               label="Thông tin đăng ký"
               style={{ marginRight: '20px', fontFamily: 'Helvetica' }}
-             
             >
               <Input
                 disabled
@@ -213,25 +217,30 @@ function LeftSidebar() {
               />
             </Form.Item>
             <Form.Item
-                style={{ width: 330}}
-                name="dateOfBirth"
-                label="Ngày Sinh"
-                rules={[
-                  {
-                    
-                    message: 'Ngày sinh không được để trống!',
-                  },
-                ]}
-                // initialValue={ moment(user.dayOfBirth, 'DD/MM/YYYY')}
-              >
-                <DatePicker
-                  disabledDate={(current) => current > moment().subtract(16, 'year').endOf('year')}
-                  style={{ width: '100%' , fontFamily: 'Helvetica',padding:'10px',borderRadius:'10px'}}
-                  locale={localeVN}
-                  format={'DD/MM/YYYY'}
-                />
-              </Form.Item>
-            <Form.Item  label="Giới tính" style={{ fontFamily: 'Helvetica' }} name="gender" >
+              style={{ width: 330 }}
+              name="dateOfBirth"
+              label="Ngày Sinh"
+              rules={[
+                {
+                  required: true,
+                  message: 'Ngày sinh không được để trống!',
+                },
+              ]}
+              // initialValue={ moment(user.dayOfBirth, 'DD/MM/YYYY')}
+            >
+              <DatePicker
+                disabledDate={(current) => current > moment().subtract(16, 'year').endOf('year')}
+                style={{
+                  width: '100%',
+                  fontFamily: 'Helvetica',
+                  padding: '10px',
+                  borderRadius: '10px',
+                }}
+                locale={localeVN}
+                format={'DD/MM/YYYY'}
+              />
+            </Form.Item>
+            <Form.Item label="Giới tính" style={{ fontFamily: 'Helvetica' }} name="gender">
               <Radio.Group>
                 <Radio value={true}>Nam</Radio>
                 <Radio value={false}>Nữ</Radio>
