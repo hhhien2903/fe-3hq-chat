@@ -1,12 +1,37 @@
-import { Avatar } from 'antd';
+import { Avatar, Modal } from 'antd';
 import './LeftSidebar.scss';
+import { useHistory } from 'react-router-dom';
 import { IoChatbubbleEllipses, IoPeople } from 'react-icons/io5';
 import { GoSignOut } from 'react-icons/go';
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthProvider';
+import { AppContext } from '../../contexts/AppProvider';
+
+import { firebaseAuth } from '../../config/firebase';
 function LeftSidebar() {
   const { user } = useContext(AuthContext);
+  const history = useHistory();
+  const { setCurrentRoom, setRooms } = useContext(AppContext);
+  const showConfirmLogoutModal = () => {
+    const confirmLogoutModal = Modal.confirm({
+      title: 'Xác Nhận',
+      content: 'Bạn có muốn đăng xuất khỏi 3HQ - Chat?',
+      okText: 'Đăng xuất',
+      okType: 'danger',
+      cancelText: 'Không',
+      onOk() {
+        firebaseAuth.signOut();
+        setCurrentRoom(null);
+        setRooms([]);
+        history.push('/login');
+      },
+      onCancel() {
+        confirmLogoutModal.destroy();
+      },
+    });
+  };
+
   return (
     <ul className="sidebar-container">
       <li className="sidebar-item avatar">
@@ -31,12 +56,10 @@ function LeftSidebar() {
         </Link>
       </li>
 
-      <li className="sidebar-item setting">
-        <Link to="/logout">
-          <span className="sidebar-link">
-            <GoSignOut size={30} color="#FFFFFF" />
-          </span>
-        </Link>
+      <li onClick={showConfirmLogoutModal} className="sidebar-item setting">
+        <span className="sidebar-link">
+          <GoSignOut size={30} color="#FFFFFF" />
+        </span>
       </li>
     </ul>
   );
