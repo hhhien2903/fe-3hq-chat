@@ -24,11 +24,12 @@
   .messageText {
     font-family: 'Helvetica', 'Arial', sans-serif;
     margin: 0px;
+    overflow-wrap: break-word;
     display: table-cell;
     vertical-align: middle;
     padding: 10px;
     color: white;
-    max-width: 400px;
+    max-width: 430px;
     border-radius: 8px;
     background-color: #1877f2;
   }

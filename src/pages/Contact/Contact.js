@@ -1,4 +1,6 @@
 import { Col, Row } from 'antd';
+import ContactList from '../../components/ContactList/ContactList';
+import ContactWindow from '../../components/ContactWindow/ContactWindow';
 import LeftSidebar from '../../components/LeftSidebar/LeftSidebar';
 import TopLeftBar from '../../components/TopLeftBar/TopLeftBar';
 const Contact = () => {
@@ -9,10 +11,10 @@ const Contact = () => {
       </Col>
       <Col className="contact-list-container" span={8}>
         <TopLeftBar />
-        <h1>Contact List</h1>
+        <ContactList />
       </Col>
       <Col className="chat-message-container" span={15}>
-        <h1>Message list</h1>
+        <ContactWindow />
       </Col>
     </Row>
   );

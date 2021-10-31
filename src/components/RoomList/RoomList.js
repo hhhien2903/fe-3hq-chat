@@ -8,21 +8,11 @@ import RoomListItem from '../RoomListItem/RoomListItem';
 import './RoomList.scss';
 const RoomList = () => {
   const { user } = useContext(AuthContext);
-  const { currentRoom, setCurrentRoom, rooms, setRooms } = useContext(AppContext);
+  const { currentRoom, setCurrentRoom, rooms, getRoomsList } = useContext(AppContext);
+
   useEffect(() => {
-    const getRooms = async () => {
-      try {
-        const roomsData = await roomApi.getRoomsByUser();
-        setRooms(roomsData);
-
-        console.log(roomsData);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    getRooms();
-  }, [setRooms, user]);
+    getRoomsList();
+  }, []);
 
   const handleSelectedRoom = (room) => {
     setCurrentRoom(room);
@@ -36,30 +26,6 @@ const RoomList = () => {
     }
   };
 
-  // const roomListTest = [
-  //   {
-  //     createdAt: '2021-10-26T13:47:13.342Z',
-  //     isGroup: true,
-  //     members: [
-  //       {
-  //         avatar: 'https://ui-avatars.com/api/?name=Hiển',
-  //         fullName: 'Hiển',
-  //         isActive: true,
-  //         _id: 'gdxADMsRd2RhhdgCtPwhrbd9DfA3',
-  //       },
-  //       {
-  //         avatar: 'https://ui-avatars.com/api/?name=Hậu',
-  //         fullName: 'Hậu',
-  //         isActive: true,
-  //         _id: '37L37Zt9a3VO9TegCmXmBLIOC4G3',
-  //       },
-  //     ],
-  //     creatorId: 'gdxADMsRd2RhhdgCtPwhrbd9DfA3',
-  //     title: 'Group ne hihi',
-  //     updatedAt: '2021-10-26T13:47:13.342Z',
-  //     _id: '617806e11ae09e0023ce66c6',
-  //   },
-  // ];
   return (
     <SimpleBar style={{ maxHeight: '100vh' }}>
       <Collapse className="room-list-collapse" ghost defaultActiveKey={'1'}>

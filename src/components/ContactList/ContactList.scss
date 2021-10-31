@@ -1,0 +1,15 @@
+.add-friend{
+    padding: 10px;
+    border-bottom: 1px solid #efefef;
+    &:hover{
+        background-color: rgb(244, 245, 247);
+    }
+}
+.friend-request{
+    cursor: pointer;
+    padding: 5px 10px;
+    border-bottom: 1px solid #efefef;
+    &:hover{
+        background-color: rgb(244, 245, 247);
+    }
+}

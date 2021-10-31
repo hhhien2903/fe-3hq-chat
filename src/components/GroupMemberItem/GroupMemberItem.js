@@ -8,11 +8,7 @@ const GroupMemberItem = (props) => {
   const { currentRoom } = useContext(AppContext);
   return (
     <Row wrap={false} style={{ height: '50px', marginBottom: '10px' }} align="middle">
-      <Avatar
-        style={{ flex: '40px 0 0' }}
-        size={40}
-        icon={<Image preview={false} src={member.avatar} />}
-      />
+      <Avatar style={{ flex: '40px 0 0' }} size={40} src={member.avatar} />
       <Typography.Title
         level={5}
         style={{

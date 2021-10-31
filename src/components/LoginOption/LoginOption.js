@@ -1,6 +1,8 @@
 import { Row, Button, Space, notification } from 'antd';
 import './LoginOption.scss';
-import { IoCall, IoLogoGoogle } from 'react-icons/io5';
+import { IoCall, IoLogoGoogle} from 'react-icons/io5';
+import {FcGoogle } from 'react-icons/fc';
+import {FcPhone } from 'react-icons/fc'
 import { firebaseAuth, providers } from '../../config/firebase';
 
 const LoginOption = (props) => {
@@ -23,22 +25,24 @@ const LoginOption = (props) => {
     <Row justify="center" align="middle" className="login-option">
       <Space direction="vertical">
         <Button
-          type="primary"
+          type="default"
           shape="round"
-          icon={<IoCall style={{ verticalAlign: 'sub' }} size={20} color="#FFFFFF" />}
+          className="btn-phone"
+          icon={<FcPhone style={{ verticalAlign: 'sub' , marginRight:'2.1875em'}} size={20}  />}
           id="login-phone"
           onClick={() => setActiveComponent('phone')}
         >
-          <p>Đăng Nhập Với Số Điện Thoại</p>
+          <p style={{marginRight:' 1.875em'}} className="login-phone">Đăng Nhập Với Số Điện Thoại</p>
         </Button>
         <Button
-          type="primary"
+          type="default"
+          className="btn-google"
           shape="round"
-          icon={<IoLogoGoogle style={{ verticalAlign: 'sub' }} size={20} color="#FFFFFF" />}
+          icon={<FcGoogle style={{ verticalAlign: 'sub' , marginRight:'2.1875em'}} size={20}  />}
           id="login-google"
           onClick={() => handleGoogleLogin()}
         >
-          <p>Đăng Nhập Với Google</p>
+          <p style={{marginRight:'5em'}} className="login-google">Đăng Nhập Với Google</p>
         </Button>
       </Space>
     </Row>

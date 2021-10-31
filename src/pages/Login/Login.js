@@ -27,7 +27,7 @@ const Login = () => {
           )}
           <Col className="login-header" span={24}>
             <Image id="logo" preview={false} width={80} height={80} src="/favicon.ico" />
-            <p className="login-title">Đăng Nhập vào 3HQ - Chat</p>
+            <p className="login-title" style={{ fontWeight: 'bold' ,fontFamily: 'Helvetica' }}>Đăng Nhập vào 3HQ - Chat</p>
           </Col>
           <Col className="login-body" span={24}>
             {activeComponent === 'default' && (
