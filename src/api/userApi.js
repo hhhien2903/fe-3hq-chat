@@ -10,7 +10,7 @@ const userApi = {
     const url = `/${USER_ENDPOINT}/`;
     return axiosClient.post(url, data);
   },
-  updateUser: (data)=>{
+  updateUser: (data) => {
     const url = `/${USER_ENDPOINT}`;
     return axiosClient.put(url, data);
   },
@@ -25,6 +25,26 @@ const userApi = {
   getFriendList: () => {
     const url = `/${USER_ENDPOINT}/friend/list`;
     return axiosClient.get(url);
+  },
+  getSearhFriend: (data) => {
+    const url = `/${USER_ENDPOINT}/find/contact/${data}`;
+    return axiosClient.get(url, data);
+  },
+  postSendFriendRequest: (data) => {
+    const url = `/${USER_ENDPOINT}/friend/request`;
+    return axiosClient.post(url, data);
+  },
+  getListFriendRequest: () => {
+    const url = `/${USER_ENDPOINT}/friend/request`;
+    return axiosClient.get(url);
+  },
+  postAcceptFriend: (data) => {
+    const url = `/${USER_ENDPOINT}/friend/accept`;
+    return axiosClient.post(url, data);
+  },
+  postRejectFriend: (data) => {
+    const url = `/${USER_ENDPOINT}/friend/reject`;
+    return axiosClient.post(url, data);
   },
 };
 
