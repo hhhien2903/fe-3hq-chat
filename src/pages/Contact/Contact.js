@@ -9,11 +9,11 @@ const Contact = () => {
       <Col className="sidebar" span={1}>
         <LeftSidebar />
       </Col>
-      <Col className="contact-list-container" span={8}>
+      <Col className="contact-list-container" span={5}>
         <TopLeftBar />
         <ContactList />
       </Col>
-      <Col className="chat-message-container" span={15}>
+      <Col className="chat-message-container" span={18}>
         <ContactWindow />
       </Col>
     </Row>
