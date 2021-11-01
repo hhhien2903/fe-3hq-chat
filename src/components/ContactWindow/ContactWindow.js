@@ -1,11 +1,28 @@
-import { Avatar, Col, Row, Typography, Form } from 'antd';
-import React, { useEffect, useState } from 'react';
+import {
+  Avatar,
+  Col,
+  Row,
+  Typography,
+  Form,
+  Empty,
+  Button,
+  Modal,
+  Input,
+  notification,
+} from 'antd';
+import React, { useEffect, useState, useContext } from 'react';
 import userApi from '../../api/userApi';
 import FriendRequestItem from '../FriendRequestItem/FriendRequestItem';
 import './ContactWindow.scss';
+import { AuthContext } from '../../contexts/AuthProvider';
 export default function ContactWindow() {
   const [idSender, setIdSender] = useState({});
   const [senders, setSender] = useState([]);
+  const [listRequest, setListRequest] = useState([]);
+  const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
+  const [searchTemp, setSearchTemp] = useState();
+  const { user } = useContext(AuthContext);
+  const [formAddFriend] = Form.useForm();
   useEffect(() => {
     const getListFriendRequest = async () => {
       try {
@@ -15,6 +32,7 @@ export default function ContactWindow() {
           console.log(idSender);
           setIdSender(idSender);
         });
+        setListRequest(listFriendRequest);
         console.log(listFriendRequest);
       } catch (error) {
         console.log(error);
@@ -35,9 +53,79 @@ export default function ContactWindow() {
     };
     getUserSender();
   }, [idSender]);
-
+  const showAddFriendModal = () => {
+    setIsAddFriendModalVisible(true);
+    formAddFriend.resetFields();
+  };
+  const handleAddFriendConfirm = async () => {
+    const { valueSearch } = formAddFriend.getFieldsValue(true);
+    try {
+      const searchTemp = await userApi.getSearhFriend(valueSearch.toLowerCase());
+      setSearchTemp(searchTemp);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleSendFriendRequest = async () => {
+    const friendRequest = {
+      senderId: user._id,
+      receiverId: searchTemp._id,
+    };
+    const sendFriendRequest = await userApi.postSendFriendRequest(friendRequest);
+    if (sendFriendRequest) {
+      notification.open({
+        message: 'Thông báo',
+        description: 'Đã gửi lời mời kết bạn cho ' + searchTemp.fullName,
+        duration: 5,
+      });
+    }
+  };
   return (
     <div className="contact-window">
+      <>
+        <Modal
+          title="Thêm bạn"
+          visible={isAddFriendModalVisible}
+          onCancel={() => setIsAddFriendModalVisible(false)}
+          footer={[
+            <Button
+              key="cancel"
+              onClick={() => {
+                formAddFriend.resetFields();
+                setIsAddFriendModalVisible(false);
+                setSearchTemp();
+              }}
+            >
+              Huỷ
+            </Button>,
+            <Button key="submit" type="primary" onClick={handleAddFriendConfirm} htmlType="submit">
+              Tìm kiếm
+            </Button>,
+          ]}
+        >
+          <Form form={formAddFriend} layout="vertical">
+            <Form.Item name="valueSearch" label="Nhập SĐT hoặc gmail muốn tìm">
+              <Input placeholder="Nhập SĐT hoặc gmail" />
+            </Form.Item>
+
+            <Form.Item name="resultSearch">
+              {searchTemp ? (
+                <>
+                  <Avatar src={searchTemp.avatar} />
+                  <Typography.Text style={{ fontSize: '17px', paddingLeft: '20px' }}>
+                    {searchTemp.fullName}
+                  </Typography.Text>
+                  <Button style={{ float: 'right' }} onClick={handleSendFriendRequest}>
+                    Kết Bạn
+                  </Button>
+                </>
+              ) : (
+                <Typography.Text></Typography.Text>
+              )}
+            </Form.Item>
+          </Form>
+        </Modal>
+      </>
       <Row className="header" align="middle">
         <Col flex="70px">
           <Row justify="center">
@@ -54,7 +142,40 @@ export default function ContactWindow() {
           </Typography.Text>
         </Col>
       </Row>
-      <FriendRequestItem userRequest={senders} />
+      {listRequest.length == 0 ? (
+        <div
+          style={{
+            height: '90%',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Empty
+            image="https://chat.zalo.me/assets/empty-LAN.a275c34eff9314b9c2eb206d1d000431.png"
+            imageStyle={{
+              height: 150,
+            }}
+            description={<span style={{ fontSize: '20px' }}>Bạn chưa có lời mời kết bạn nào</span>}
+          >
+            <Button
+              onClick={showAddFriendModal}
+              style={{
+                color: '#fff',
+                borderColor: '#1890ff',
+                background: '#1890ff',
+              }}
+            >
+              Thêm bạn
+            </Button>
+          </Empty>
+        </div>
+      ) : (
+        <FriendRequestItem userRequest={senders} />
+      )}
+
       {/* <Row gutter={[16, 16]}>
         <Col
           style={{
