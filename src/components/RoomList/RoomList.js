@@ -1,7 +1,6 @@
 import { Collapse } from 'antd';
 import { useContext, useEffect } from 'react';
 import SimpleBar from 'simplebar-react';
-import roomApi from '../../api/roomApi';
 import { AppContext } from '../../contexts/AppProvider';
 import { AuthContext } from '../../contexts/AuthProvider';
 import RoomListItem from '../RoomListItem/RoomListItem';
