@@ -13,12 +13,12 @@ import localeVN from 'antd/es/date-picker/locale/vi_VN';
 import moment from 'moment';
 import 'moment/locale/vi';
 import { useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import userApi from '../../api/userApi';
 import background from '../../assets/images/backgound.jpg';
-import { AuthContext } from '../../contexts/AuthProvider';
-import { Link, useHistory } from 'react-router-dom';
-import './Register.scss';
 import { firebaseAuth } from '../../config/firebase';
+import { AuthContext } from '../../contexts/AuthProvider';
+import './Register.scss';
 
 const Register = () => {
   const history = useHistory();
@@ -101,7 +101,7 @@ const Register = () => {
                   },
                 ]}
               >
-                <Select placeholder="Vui lòng chọn giới tính" >
+                <Select placeholder="Vui lòng chọn giới tính">
                   <Option value={true}>Nam</Option>
                   <Option value={false}>Nữ</Option>
                 </Select>

@@ -1,44 +1,38 @@
-import './LeftSidebar.scss';
-import { useHistory } from 'react-router-dom';
-import { IoChatbubbleEllipses, IoPeople } from 'react-icons/io5';
-import { GoSignOut } from 'react-icons/go';
-import { Link } from 'react-router-dom';
-import { AuthContext } from '../../contexts/AuthProvider';
-import moment from 'moment';
-import localeVN from 'antd/es/date-picker/locale/vi_VN';
-import React, { useState, useContext } from 'react';
 import {
-  Modal,
+  Avatar,
+  Button,
+  DatePicker,
   Form,
   Input,
+  message,
+  Modal,
+  notification,
   Radio,
-  Select,
-  Button,
-  Upload,
   Tooltip,
   Typography,
-  Avatar,
-  Image,
-  message,
-  notification,
-  DatePicker,
+  Upload,
 } from 'antd';
-import './ModalUserInfo.scss';
-import { BsFillCameraFill } from 'react-icons/bs';
+import localeVN from 'antd/es/date-picker/locale/vi_VN';
 import FormData from 'form-data';
-import { AppContext } from '../../contexts/AppProvider';
+import moment from 'moment';
+import React, { useContext, useState } from 'react';
+import { BsFillCameraFill } from 'react-icons/bs';
+import { GoSignOut } from 'react-icons/go';
+import { IoChatbubbleEllipses, IoPeople } from 'react-icons/io5';
+import { Link, useHistory } from 'react-router-dom';
 import userApi from '../../api/userApi';
-import { firebaseAuth, firebase } from '../../config/firebase';
+import { firebaseAuth } from '../../config/firebase';
+import { AppContext } from '../../contexts/AppProvider';
+import { AuthContext } from '../../contexts/AuthProvider';
+import './LeftSidebar.scss';
+import './ModalUserInfo.scss';
 
-const { Option } = Select;
 const { Title } = Typography;
 function LeftSidebar() {
-  const { currentRoom } = useContext(AppContext);
   const { user, setUser } = useContext(AuthContext);
   const history = useHistory();
   const { setCurrentRoom, setRooms } = useContext(AppContext);
   const [editName, setEditName] = useState(user.fullName);
-  const [editableStr, setEditableStr] = useState('This is an editable text.');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const showModal = () => {
     setIsModalVisible(true);
@@ -66,7 +60,6 @@ function LeftSidebar() {
       return true;
     },
   };
-  console.log(user);
 
   const [formUpdateUser] = Form.useForm();
   const handleUpdate = () => {
@@ -101,7 +94,6 @@ function LeftSidebar() {
       .catch((err) => {
         console.log(err);
       });
-    console.log(editName);
   };
 
   const showConfirmLogoutModal = () => {
