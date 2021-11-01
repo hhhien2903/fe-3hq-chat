@@ -72,11 +72,13 @@ export default function ContactWindow() {
       receiverId: searchTemp._id,
     };
     const sendFriendRequest = await userApi.postSendFriendRequest(friendRequest);
-    notification.open({
-      message: 'Thông báo',
-      description: 'Đã gửi lời mời kết bạn cho ' + searchTemp.fullName,
-      duration: 5,
-    });
+    if (sendFriendRequest) {
+      notification.open({
+        message: 'Thông báo',
+        description: 'Đã gửi lời mời kết bạn cho ' + searchTemp.fullName,
+        duration: 5,
+      });
+    }
   };
   return (
     <div className="contact-window">

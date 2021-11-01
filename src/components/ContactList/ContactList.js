@@ -31,11 +31,13 @@ export default function ContactList() {
     // console.log(friendRequest);
     const sendFriendRequest = await userApi.postSendFriendRequest(friendRequest);
     // console.log(sendFriendRequest);
-    notification.open({
-      message: 'Thông báo',
-      description: 'Đã gửi lời mời kết bạn cho ' + searchTemp.fullName,
-      duration: 5,
-    });
+    if (sendFriendRequest) {
+      notification.open({
+        message: 'Thông báo',
+        description: 'Đã gửi lời mời kết bạn cho ' + searchTemp.fullName,
+        duration: 5,
+      });
+    }
   };
   return (
     <SimpleBar style={{ height: '100vh', borderRight: '1px solid #dbdbdf' }}>
