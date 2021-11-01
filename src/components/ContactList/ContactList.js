@@ -1,6 +1,6 @@
 import SimpleBar from 'simplebar-react';
 import { UserAddOutlined } from '@ant-design/icons';
-import { Modal, Typography, Form, Button, Input, Avatar } from 'antd';
+import { notification, Modal, Typography, Form, Button, Input, Avatar } from 'antd';
 import { AuthContext } from '../../contexts/AuthProvider';
 import './ContactList.scss';
 import React, { useState, useContext } from 'react';
@@ -9,7 +9,6 @@ export default function ContactList() {
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
   const [searchTemp, setSearchTemp] = useState();
   const [formAddFriend] = Form.useForm();
-
   const { user } = useContext(AuthContext);
   const showAddFriendModal = () => {
     setIsAddFriendModalVisible(true);
@@ -22,7 +21,6 @@ export default function ContactList() {
       setSearchTemp(searchTemp);
     } catch (error) {
       console.log(error);
-      console.log(searchTemp);
     }
   };
   const handleSendFriendRequest = async () => {
@@ -30,9 +28,16 @@ export default function ContactList() {
       senderId: user._id,
       receiverId: searchTemp._id,
     };
-    console.log(friendRequest);
+    // console.log(friendRequest);
     const sendFriendRequest = await userApi.postSendFriendRequest(friendRequest);
-    console.log(sendFriendRequest);
+    // console.log(sendFriendRequest);
+    if (sendFriendRequest) {
+      notification.open({
+        message: 'Thông báo',
+        description: 'Đã gửi lời mời kết bạn cho ' + searchTemp.fullName,
+        duration: 5,
+      });
+    }
   };
   return (
     <SimpleBar style={{ height: '100vh', borderRight: '1px solid #dbdbdf' }}>
@@ -90,7 +95,7 @@ export default function ContactList() {
           src={'https://chat.zalo.me/assets/NewFr@2x.820483766abed8ab03205b8e4a8b105b.png'}
         />
         <Typography.Text style={{ fontSize: '17px', paddingLeft: '15px' }}>
-          Danh sach yeu cau ket ban
+          Danh sách yêu cầu kết bạn
         </Typography.Text>
       </div>
     </SimpleBar>
