@@ -1,7 +1,7 @@
-import { Avatar, Button, Image, Row, Typography } from 'antd';
-import { AuthContext } from '../../contexts/AuthProvider';
-import { AppContext } from '../../contexts/AppProvider';
+import { Avatar, Button, Row, Typography } from 'antd';
 import { useContext } from 'react';
+import { AppContext } from '../../contexts/AppProvider';
+import { AuthContext } from '../../contexts/AuthProvider';
 const GroupMemberItem = (props) => {
   const { member } = props;
   const { user } = useContext(AuthContext);

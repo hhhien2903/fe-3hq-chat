@@ -100,7 +100,7 @@ function ChatWindow() {
 
     const leaveRoomEvent = () => {
       if (socket && currentRoom) {
-        socket.emit('leaveRoom', { roomId: currentRoom._id });
+        socket.emit('leaveRoom', { roomId: currentRoom._id, userId: user._id });
         socket.once('leftRoom', (data) => {
           console.log('left room', data);
         });
