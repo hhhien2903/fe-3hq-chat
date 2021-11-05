@@ -1,89 +1,71 @@
 import SimpleBar from 'simplebar-react';
 import { UserAddOutlined } from '@ant-design/icons';
-import { notification, Modal, Typography, Form, Button, Input, Avatar } from 'antd';
-import { AuthContext } from '../../contexts/AuthProvider';
+import { Typography, Avatar, Collapse, Modal, Button, Form, notification } from 'antd';
 import './ContactList.scss';
-import React, { useState, useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { AppContext } from '../../contexts/AppProvider';
+import ContactListItem from '../ContactListItem/ContactListItem';
 import userApi from '../../api/userApi';
 export default function ContactList() {
-  const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
-  const [searchTemp, setSearchTemp] = useState();
-  const [formAddFriend] = Form.useForm();
-  const { user } = useContext(AuthContext);
-  const showAddFriendModal = () => {
-    setIsAddFriendModalVisible(true);
-    formAddFriend.resetFields();
+  const { setIsAddFriendModalVisible, currentFriend, setCurrentFriend, getFriendList, friends } =
+    useContext(AppContext);
+  const [isContactModalVisible, setIsContactModalVisible] = useState(false);
+  useEffect(() => {
+    getFriendList();
+  }, []);
+  const showConfirmUnfriend = () => {
+    const confirmUnfriend = Modal.confirm({
+      title: 'Xác Nhận',
+      content: 'Bạn có muốn hủy kết bạn với ' + currentFriend.fullName,
+      okText: 'Hủy kết bạn',
+      okType: 'danger',
+      cancelText: 'Hủy',
+
+      onCancel() {
+        confirmUnfriend.destroy();
+        console.log('1');
+      },
+      onOk() {
+        console.log(currentFriend._id);
+        patchUnfriend();
+      },
+    });
   };
-  const handleAddFriendConfirm = async () => {
-    const { valueSearch } = formAddFriend.getFieldsValue(true);
+  const patchUnfriend = async () => {
     try {
-      const searchTemp = await userApi.getSearhFriend(valueSearch.toLowerCase());
-      setSearchTemp(searchTemp);
+      const unfriend = await userApi.patchUnfriend(currentFriend._id);
+      notification.open({
+        message: 'Thông báo',
+        description: 'Bạn đã hủy kết bạn với ' + currentFriend.fullName,
+        duration: 3,
+      });
     } catch (error) {
       console.log(error);
     }
   };
-  const handleSendFriendRequest = async () => {
-    const friendRequest = {
-      senderId: user._id,
-      receiverId: searchTemp._id,
-    };
-    // console.log(friendRequest);
-    const sendFriendRequest = await userApi.postSendFriendRequest(friendRequest);
-    // console.log(sendFriendRequest);
-    if (sendFriendRequest) {
-      notification.open({
-        message: 'Thông báo',
-        description: 'Đã gửi lời mời kết bạn cho ' + searchTemp.fullName,
-        duration: 5,
-      });
+  const handleSelected = (friend) => {
+    setCurrentFriend(friend);
+    setIsContactModalVisible(true);
+  };
+  const setFriendClassName = (index) => {
+    if (friends[index]._id === currentFriend?._id) {
+      return 'contact content active';
+    } else {
+      return 'contact content';
     }
+  };
+  const handleCloseModal = () => {
+    setIsContactModalVisible(false);
+  };
+  const handleUnFriend = () => {
+    showConfirmUnfriend();
+  };
+  const handleShowModalAddFriend = () => {
+    setIsAddFriendModalVisible(true);
   };
   return (
     <SimpleBar style={{ height: '100vh', borderRight: '1px solid #dbdbdf' }}>
-      <Modal
-        title="Thêm bạn"
-        visible={isAddFriendModalVisible}
-        onCancel={() => setIsAddFriendModalVisible(false)}
-        footer={[
-          <Button
-            key="cancel"
-            onClick={() => {
-              formAddFriend.resetFields();
-              setIsAddFriendModalVisible(false);
-              setSearchTemp();
-            }}
-          >
-            Huỷ
-          </Button>,
-          <Button key="submit" type="primary" onClick={handleAddFriendConfirm} htmlType="submit">
-            Tìm kiếm
-          </Button>,
-        ]}
-      >
-        <Form form={formAddFriend} layout="vertical">
-          <Form.Item name="valueSearch" label="Nhập SĐT hoặc gmail muốn tìm">
-            <Input placeholder="Nhập SĐT hoặc gmail" />
-          </Form.Item>
-
-          <Form.Item name="resultSearch">
-            {searchTemp ? (
-              <>
-                <Avatar src={searchTemp.avatar} />
-                <Typography.Text style={{ fontSize: '17px', paddingLeft: '20px' }}>
-                  {searchTemp.fullName}
-                </Typography.Text>
-                <Button style={{ float: 'right' }} onClick={handleSendFriendRequest}>
-                  Kết Bạn
-                </Button>
-              </>
-            ) : (
-              <Typography.Text></Typography.Text>
-            )}
-          </Form.Item>
-        </Form>
-      </Modal>
-      <div className="add-friend" onClick={showAddFriendModal}>
+      <div className="add-friend" onClick={handleShowModalAddFriend}>
         <UserAddOutlined style={{ fontSize: '25px', color: '#0068ff' }} />
         <Typography.Text style={{ fontSize: '17px', cursor: 'pointer', paddingLeft: '15px' }}>
           Thêm bạn bè bằng SĐT hoặc Gmail
@@ -98,6 +80,119 @@ export default function ContactList() {
           Danh sách yêu cầu kết bạn
         </Typography.Text>
       </div>
+      {currentFriend ? (
+        <>
+          <>
+            <Modal
+              className="modal-contact"
+              centered
+              width={400}
+              title="Bạn bè"
+              visible={isContactModalVisible}
+              onCancel={handleCloseModal}
+              footer={[
+                <Button key="cancel" onClick={handleCloseModal}>
+                  Hủy
+                </Button>,
+                <Button
+                  style={{ backgroundColor: 'red', color: 'white' }}
+                  danger
+                  key="submit"
+                  onClick={handleUnFriend}
+                >
+                  Hủy kết bạn
+                </Button>,
+              ]}
+            >
+              <div className="form-header">
+                <div className="avatar-container-profile">
+                  <div className="upload-avatar">
+                    <Avatar size={93} src={currentFriend.avatar} />
+                  </div>
+                </div>
+                <div className="name-container-profile">
+                  <div className="input-edit-name">
+                    <Typography.Text style={{ fontSize: '30px' }}>
+                      {currentFriend.fullName}
+                    </Typography.Text>
+                  </div>
+                </div>
+              </div>
+              <Form layout="vertical" style={{ gap: '10px' }}>
+                <Form.Item
+                  style={{ marginRight: '20px', fontFamily: 'Helvetica' }}
+                  name="contact"
+                  label={<p style={{ fontSize: '18px' }}>Thông tin đăng ký:</p>}
+                >
+                  <div className="info-friend"> {currentFriend.contact}</div>
+                </Form.Item>
+                <Form.Item
+                  style={{ marginRight: '20px', fontFamily: 'Helvetica' }}
+                  name="dateOFBirth"
+                  label={<p style={{ fontSize: '18px' }}>Ngày sinh:</p>}
+                >
+                  <div className="info-friend">{currentFriend.dayOfBirth}</div>
+                </Form.Item>
+              </Form>
+              <Form layout="horizontal">
+                <Form.Item
+                  style={{ marginRight: '20px', fontFamily: 'Helvetica' }}
+                  name="dateOFBirth"
+                  label={<p style={{ fontSize: '18px', margin: '0px auto' }}>Giới tính:</p>}
+                >
+                  <p
+                    style={{
+                      paddingLeft: '20px',
+                      fontSize: '18px',
+                      fontFamily: 'Helvetica',
+                      margin: '0px auto',
+                    }}
+                  >
+                    {currentFriend.gender === true ? 'Nam' : 'Nữ'}
+                  </p>
+                </Form.Item>
+              </Form>
+            </Modal>
+          </>
+          <div className="list-friend">
+            <Collapse className="contact-list-collapse" ghost defaultActiveKey={'1'}>
+              <Collapse.Panel header={`Bạn bè (${friends.length})`} key="1">
+                <div className="contact-list scrollable">
+                  {friends.map((friend, index) => {
+                    return (
+                      <ContactListItem
+                        key={friend._id}
+                        cName={setFriendClassName(index)}
+                        handleSelected={handleSelected}
+                        friend={friend}
+                      />
+                    );
+                  })}
+                </div>
+              </Collapse.Panel>
+            </Collapse>
+          </div>
+        </>
+      ) : (
+        <>
+          <Collapse className="contact-list-collapse" ghost defaultActiveKey={'1'}>
+            <Collapse.Panel header={`Bạn bè (${friends.length})`} key="1">
+              <div className="contact-list scrollable">
+                {friends.map((friend, index) => {
+                  return (
+                    <ContactListItem
+                      key={friend._id}
+                      cName={setFriendClassName(index)}
+                      handleSelected={handleSelected}
+                      friend={friend}
+                    />
+                  );
+                })}
+              </div>
+            </Collapse.Panel>
+          </Collapse>
+        </>
+      )}
     </SimpleBar>
   );
 }
