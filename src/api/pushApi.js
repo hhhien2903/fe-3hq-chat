@@ -1,4 +1,4 @@
-import axiosClient from './axiosClient';
+import { axiosClient } from './axiosClient';
 
 const PUSH_ENDPOINT = process.env.REACT_APP_API_REGISTER_PUSH;
 const pushApi = {
