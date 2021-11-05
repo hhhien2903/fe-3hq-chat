@@ -1,15 +1,63 @@
-.add-friend{
-    padding: 10px;
-    border-bottom: 1px solid #efefef;
-    &:hover{
-        background-color: rgb(244, 245, 247);
-    }
+.add-friend {
+  padding: 10px;
+  border-bottom: 1px solid #efefef;
+  &:hover {
+    background-color: rgb(244, 245, 247);
+  }
 }
-.friend-request{
-    cursor: pointer;
-    padding: 5px 10px;
-    border-bottom: 1px solid #efefef;
-    &:hover{
-        background-color: rgb(244, 245, 247);
-    }
+.friend-request {
+  cursor: pointer;
+  padding: 5px 10px;
+  border-bottom: 1px solid #efefef;
+  &:hover {
+    background-color: rgb(244, 245, 247);
+  }
+}
+.contact-list-collapse {
+  .ant-collapse-content-box {
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+  }
+
+  .ant-collapse-header {
+    padding-bottom: 0px !important;
+  }
+}
+.modal {
+  animation: fadeIn ease-in 0.5s;
+}
+.form-name {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  align-content: center;
+  margin-left: 1000px;
+}
+.name-user {
+  font-weight: bold;
+}
+.form-header {
+  margin-bottom: 70px;
+}
+.avatar-container-profile {
+  height: 160px;
+  background: linear-gradient(to left, #b066fe, #63e2ff);
+}
+.upload-avatar {
+  transform: translate(130px, 103px);
+}
+.btn-upload-vatar {
+  transform: translate(200px, 83px);
+  .ant-upload-list {
+    display: none;
+  }
+}
+.info-friend {
+  font-size: 18px;
+  border-radius: 5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  cursor: pointer;
+  border: 1px solid #808080;
+  text-align: center;
 }

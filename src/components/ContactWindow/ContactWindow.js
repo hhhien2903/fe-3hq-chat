@@ -1,39 +1,24 @@
-import {
-  Avatar,
-  Col,
-  Row,
-  Typography,
-  Form,
-  Empty,
-  Button,
-  Modal,
-  Input,
-  notification,
-} from 'antd';
+import { Avatar, Col, Row, Typography, Empty, Button, Collapse } from 'antd';
 import React, { useEffect, useState, useContext } from 'react';
 import userApi from '../../api/userApi';
 import FriendRequestItem from '../FriendRequestItem/FriendRequestItem';
 import './ContactWindow.scss';
-import { AuthContext } from '../../contexts/AuthProvider';
+import { AppContext } from '../../contexts/AppProvider';
 export default function ContactWindow() {
   const [idSender, setIdSender] = useState({});
   const [senders, setSender] = useState([]);
   const [listRequest, setListRequest] = useState([]);
-  const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
-  const [searchTemp, setSearchTemp] = useState();
-  const { user } = useContext(AuthContext);
-  const [formAddFriend] = Form.useForm();
+  const { setIsAddFriendModalVisible } = useContext(AppContext);
   useEffect(() => {
     const getListFriendRequest = async () => {
       try {
         const listFriendRequest = await userApi.getListFriendRequest();
         listFriendRequest.map((result) => {
           const idSender = result.senderId;
-          console.log(idSender);
           setIdSender(idSender);
         });
-        setListRequest(listFriendRequest);
         console.log(listFriendRequest);
+        setListRequest(listFriendRequest);
       } catch (error) {
         console.log(error);
       }
@@ -45,87 +30,20 @@ export default function ContactWindow() {
     const getUserSender = async () => {
       try {
         const sender = await userApi.getUserById(idSender);
-        console.log(sender);
         setSender(sender);
       } catch (error) {
         console.log(error);
       }
     };
+    console.log(senders);
     getUserSender();
   }, [idSender]);
+
   const showAddFriendModal = () => {
     setIsAddFriendModalVisible(true);
-    formAddFriend.resetFields();
-  };
-  const handleAddFriendConfirm = async () => {
-    const { valueSearch } = formAddFriend.getFieldsValue(true);
-    try {
-      const searchTemp = await userApi.getSearhFriend(valueSearch.toLowerCase());
-      setSearchTemp(searchTemp);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const handleSendFriendRequest = async () => {
-    const friendRequest = {
-      senderId: user._id,
-      receiverId: searchTemp._id,
-    };
-    const sendFriendRequest = await userApi.postSendFriendRequest(friendRequest);
-    if (sendFriendRequest) {
-      notification.open({
-        message: 'Thông báo',
-        description: 'Đã gửi lời mời kết bạn cho ' + searchTemp.fullName,
-        duration: 5,
-      });
-    }
   };
   return (
     <div className="contact-window">
-      <>
-        <Modal
-          title="Thêm bạn"
-          visible={isAddFriendModalVisible}
-          onCancel={() => setIsAddFriendModalVisible(false)}
-          footer={[
-            <Button
-              key="cancel"
-              onClick={() => {
-                formAddFriend.resetFields();
-                setIsAddFriendModalVisible(false);
-                setSearchTemp();
-              }}
-            >
-              Huỷ
-            </Button>,
-            <Button key="submit" type="primary" onClick={handleAddFriendConfirm} htmlType="submit">
-              Tìm kiếm
-            </Button>,
-          ]}
-        >
-          <Form form={formAddFriend} layout="vertical">
-            <Form.Item name="valueSearch" label="Nhập SĐT hoặc gmail muốn tìm">
-              <Input placeholder="Nhập SĐT hoặc gmail" />
-            </Form.Item>
-
-            <Form.Item name="resultSearch">
-              {searchTemp ? (
-                <>
-                  <Avatar src={searchTemp.avatar} />
-                  <Typography.Text style={{ fontSize: '17px', paddingLeft: '20px' }}>
-                    {searchTemp.fullName}
-                  </Typography.Text>
-                  <Button style={{ float: 'right' }} onClick={handleSendFriendRequest}>
-                    Kết Bạn
-                  </Button>
-                </>
-              ) : (
-                <Typography.Text></Typography.Text>
-              )}
-            </Form.Item>
-          </Form>
-        </Modal>
-      </>
       <Row className="header" align="middle">
         <Col flex="70px">
           <Row justify="center">
@@ -142,7 +60,7 @@ export default function ContactWindow() {
           </Typography.Text>
         </Col>
       </Row>
-      {listRequest.length == 0 ? (
+      {listRequest.length === 0 ? (
         <div
           style={{
             height: '90%',
@@ -173,83 +91,16 @@ export default function ContactWindow() {
           </Empty>
         </div>
       ) : (
-        <FriendRequestItem userRequest={senders} />
+        <div className="suggetion-box">
+          <Collapse ghost defaultActiveKey={'1'}>
+            <Collapse.Panel header={`Lời mời kết bạn (${listRequest.length})`} key="1">
+              <Row gutter={[8, 16]}>
+                <FriendRequestItem userRequest={senders} />
+              </Row>
+            </Collapse.Panel>
+          </Collapse>
+        </div>
       )}
-
-      {/* <Row gutter={[16, 16]}>
-        <Col
-          style={{
-            height: '100px',
-            width: '100px',
-            background: '#efefef',
-            border: '1px solid black',
-          }}
-          span={6}
-        />
-        <Col
-          style={{
-            height: '100px',
-            width: '100px',
-            background: '#efefef',
-            border: '1px solid black',
-          }}
-          span={6}
-        />
-        <Col
-          style={{
-            height: '100px',
-            width: '100px',
-            background: '#efefef',
-            border: '1px solid black',
-          }}
-          span={6}
-        />
-        <Col
-          style={{
-            height: '100px',
-            width: '100px',
-            background: '#efefef',
-            border: '1px solid black',
-          }}
-          span={6}
-        />
-        <Col
-          style={{
-            height: '100px',
-            width: '100px',
-            background: '#efefef',
-            border: '1px solid black',
-          }}
-          span={6}
-        />
-        <Col
-          style={{
-            height: '100px',
-            width: '100px',
-            background: '#efefef',
-            border: '1px solid black',
-          }}
-          span={6}
-        />
-        <Col
-          style={{
-            height: '100px',
-            width: '100px',
-            background: '#efefef',
-            border: '1px solid black',
-          }}
-          span={6}
-        />
-        <Col
-          style={{
-            height: '100px',
-            width: '100px',
-            background: '#efefef',
-            border: '1px solid black',
-          }}
-          span={6}
-        />
-      </Row> */}
     </div>
   );
 }

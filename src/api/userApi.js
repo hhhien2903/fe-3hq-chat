@@ -46,6 +46,10 @@ const userApi = {
     const url = `/${USER_ENDPOINT}/friend/reject`;
     return axiosClient.post(url, data);
   },
+  patchUnfriend: (id) => {
+    const url = `/${USER_ENDPOINT}/friend/unfriend?friendId=${id}`;
+    return axiosClient.patch(url);
+  },
 };
 
 export default userApi;

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import roomApi from '../api/roomApi';
+import userApi from '../api/userApi';
 
 export const AppContext = React.createContext();
 
@@ -8,6 +9,10 @@ export default function AppProvider({ children }) {
   const [currentRoom, setCurrentRoom] = useState(null);
   const [socket, setSocket] = useState(null);
   const [rooms, setRooms] = useState([]);
+  const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
+  const [friends, setFriends] = useState([]);
+  const [currentFriend, setCurrentFriend] = useState(null);
+
   const setupSocket = async () => {
     const newSocket = await io(process.env.REACT_APP_SOCKET_BASE_URL, {
       transports: ['websocket'],
@@ -17,7 +22,14 @@ export default function AppProvider({ children }) {
   useEffect(() => {
     setupSocket();
   }, []);
-
+  const getFriendList = async () => {
+    try {
+      const friendsData = await userApi.getFriendList();
+      setFriends(friendsData.friends);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const getRoomsList = async () => {
     try {
       const roomsData = await roomApi.getRoomsByUser();
@@ -38,6 +50,13 @@ export default function AppProvider({ children }) {
         setSocket,
         setupSocket,
         getRoomsList,
+        isAddFriendModalVisible,
+        setIsAddFriendModalVisible,
+        getFriendList,
+        friends,
+        setFriends,
+        currentFriend,
+        setCurrentFriend,
       }}
     >
       {children}
