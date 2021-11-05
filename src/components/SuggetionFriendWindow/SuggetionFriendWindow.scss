@@ -1,0 +1,22 @@
+.suggetion-window {
+  border-right: 1px solid #dbdbdf;
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  .header {
+    height: 70px;
+    border-bottom: 1px solid #dbdbdf;
+    box-shadow: 0 0 6px #dbdbdf;
+    .title {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+  .suggetion-box {
+    height: 90vh;
+    padding: 40px 50px;
+  }
+}

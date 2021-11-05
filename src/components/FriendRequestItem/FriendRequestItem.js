@@ -32,35 +32,33 @@ const FriendRequestItem = (props) => {
     });
   };
   return (
-    <div style={{ width: '100vh' }}>
-      <Row gutter={[16, 16]} style={{ padding: '25px', textAlign: 'center' }}>
-        <Col
-          style={{
-            height: '220px',
-            width: '220px',
-            background: '#efefef',
-            border: '1px solid black',
-            textAlign: 'center',
-          }}
-          span={6}
-        >
-          <Row align="middle" justify="center" style={{ padding: '10px', margin: 'auto 0' }}>
-            <Avatar size={100} src={userRequest.avatar} />
-          </Row>
-          <Row justify="center">
-            <Typography.Text style={{ padding: '0 0 10px 0', fontSize: '20px' }}>
-              {userRequest.fullName}
-            </Typography.Text>
-          </Row>
-          <Row justify="center">
-            <Button style={{ marginRight: '20px' }} onClick={handleAcceptFriend}>
-              Đồng ý
-            </Button>
-            <Button onClick={handleRejectFriend}>Từ Chối</Button>
-          </Row>
-        </Col>
-      </Row>
-    </div>
+    <>
+      <Col
+        style={{
+          margin: '0px 20px',
+          height: '250px',
+          borderRadius: '4px',
+          border: '1px solid #808080',
+          background: 'white',
+        }}
+        span={5}
+      >
+        <Row justify="center" style={{ paddingTop: '5px', margin: 'auto 0' }}>
+          <Avatar size={93} src={userRequest.avatar} />
+        </Row>
+        <Row justify="center">
+          <Typography.Text style={{ padding: '0 0 10px 0', fontSize: '20px' }}>
+            {userRequest.fullName}
+          </Typography.Text>
+        </Row>
+        <Row justify="center">
+          <Button style={{ marginRight: '20px' }} onClick={handleAcceptFriend}>
+            Đồng ý
+          </Button>
+          <Button onClick={handleRejectFriend}>Từ Chối</Button>
+        </Row>
+      </Col>
+    </>
   );
 };
 export default FriendRequestItem;
