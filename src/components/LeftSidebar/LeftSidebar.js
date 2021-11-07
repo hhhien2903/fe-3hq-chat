@@ -7,16 +7,19 @@ import {
   message,
   Modal,
   notification,
+  Image,
   Radio,
   Tooltip,
   Typography,
   Upload,
 } from 'antd';
+import ImgCrop from 'antd-img-crop';
 import localeVN from 'antd/es/date-picker/locale/vi_VN';
 import FormData from 'form-data';
 import moment from 'moment';
 import React, { useContext, useState } from 'react';
 import { BsFillCameraFill } from 'react-icons/bs';
+import { MdInfo } from 'react-icons/md';
 import { GoSignOut } from 'react-icons/go';
 import { IoChatbubbleEllipses, IoPeople } from 'react-icons/io5';
 import { Link, useHistory } from 'react-router-dom';
@@ -35,20 +38,12 @@ function LeftSidebar() {
   const [editName, setEditName] = useState(user.fullName);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const showModal = () => {
+    setEditName(user.fullName);
+    formUpdateUser.resetFields();
     setIsModalVisible(true);
   };
 
-  const handleUploadAvatar = async (fileData) => {
-    const formData = new FormData();
-    formData.append('avatar', fileData.file);
-    try {
-      console.log(user);
-      const imageData = await userApi.uploadAvatar(formData);
-      setUser(imageData);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+ 
   const checkFileIsImage = {
     beforeUpload: (file) => {
       if (!file['type'].includes('image')) {
@@ -60,7 +55,17 @@ function LeftSidebar() {
       return true;
     },
   };
-
+  const handleUploadAvatar = async (fileData) => {
+    const formData = new FormData();
+    formData.append('avatar', fileData.file);
+    try {
+      console.log(user);
+      const imageData = await userApi.uploadAvatar(formData);
+      setUser(imageData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const [formUpdateUser] = Form.useForm();
   const handleUpdate = () => {
     formUpdateUser
@@ -95,7 +100,6 @@ function LeftSidebar() {
         console.log(err);
       });
   };
-
   const showConfirmLogoutModal = () => {
     const confirmLogoutModal = Modal.confirm({
       title: 'Xác Nhận',
@@ -112,6 +116,41 @@ function LeftSidebar() {
       onCancel() {
         confirmLogoutModal.destroy();
       },
+    });
+  };
+
+  const showModalInfoTeam = () => {
+    const modalTeam = Modal.info({
+      title: '3HQ - Web',
+      width: 500,
+      okText: 'Xác nhận',
+      content: (
+        <div className="modal-team-info container">
+          <h2 className="title">Nhóm 1</h2>
+          <div className="info">
+             <h4 className="email">Email:</h4>
+             <div>
+              <p>3hqchatapp@gmail.com</p>
+             </div>
+          </div>
+          <div className="info">
+             <h4 className="member">Thành viên:</h4>
+             <div>
+              <p>Nguyễn Thế Hậu - 18050691</p>
+              <p>Hoàng Hữu Hiển - 18050261</p>
+              <p>Phan Võ Nhật Hoàng - 18095331</p>
+              <p>Võ Đại Quyền - 18056691</p>
+             </div>
+          </div>
+          <div className="info">
+             <h4 className="website">Website:</h4>
+             <div>
+              <a href="https://chat.3hq.social/">https://chat.3hq.social</a>
+             </div>
+          </div>
+        </div>
+      ),
+      onOk() {},
     });
   };
   return (
@@ -137,6 +176,11 @@ function LeftSidebar() {
             </span>
           </Link>
         </li>
+        <li className="sidebar-item" style={{marginTop: 'auto'}}>
+          <span className="sidebar-link">
+            <MdInfo size={30} color="#FFFFFF" onClick={showModalInfoTeam} />
+          </span>
+        </li>
         <li onClick={showConfirmLogoutModal} className="sidebar-item setting">
           <span className="sidebar-link">
             <GoSignOut size={30} color="#FFFFFF" />
@@ -154,17 +198,14 @@ function LeftSidebar() {
           onCancel={() => setIsModalVisible(false)}
           footer={[
             <Button
-              key="cancel"
               style={{ fontWeight: 'bold', fontFamily: 'Helvetica' }}
               onClick={() => setIsModalVisible(false)}
             >
               Huỷ
             </Button>,
             <Button
-              key="submit"
               type="primary"
               style={{ fontWeight: 'bold', fontFamily: 'Helvetica' }}
-              //  onClick={() => setIsModalVisible(false)}
               onClick={handleUpdate}
             >
               Cập nhật
@@ -176,20 +217,26 @@ function LeftSidebar() {
               <div className="upload-avatar">
                 <Avatar
                   size={93}
-                  src={user.avatar}
-                  // icon={<Image src={user.avatar} /*preview = {true }*//>}
+                  icon={<Image src={user.avatar} preview = {true }/>}
                 />
               </div>
               <div className="btn-upload-vatar">
                 <Tooltip title="Tải ảnh lên">
+                  <ImgCrop
+                   {...checkFileIsImage}
+                   rotate
+                    modalTitle="Chỉnh sửa ảnh"
+                    modalOk="Xác Nhận"
+                    modalCancel="Huỷ"
+                  >
                   <Upload
-                    {...checkFileIsImage}
                     previewFile={false}
                     customRequest={handleUploadAvatar}
                     progress={false}
                   >
                     {<BsFillCameraFill />}
                   </Upload>
+                  </ImgCrop>
                 </Tooltip>
               </div>
             </div>

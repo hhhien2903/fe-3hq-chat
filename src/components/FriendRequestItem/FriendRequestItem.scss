@@ -1,0 +1,11 @@
+.friend__request {
+  &.content {
+  }
+  &.content:hover {
+    // background-color: rgb(244, 245, 247);
+    background: red;
+  }
+  &.active {
+    background-color: rgb(244, 245, 247);
+  }
+}
