@@ -1,9 +1,11 @@
 import React from 'react';
 import { Avatar, Button, Col, Row, Typography } from 'antd';
-export default function SuggetionFriendItem() {
+const SuggetionFriendItem = (props) => {
+  const { friendSuggestion, cName, handleSelected } = props;
   return (
     <>
       <Col
+        className={cName}
         style={{
           margin: '0px 20px',
           height: '250px',
@@ -12,12 +14,13 @@ export default function SuggetionFriendItem() {
           background: 'white',
         }}
         span={5}
+        onClick={() => handleSelected(friendSuggestion)}
       >
         <Row justify="center" style={{ paddingTop: '5px' }}>
-          <Avatar size={93} />
+          <Avatar size={93} src={friendSuggestion.avatar} />
         </Row>
         <Row justify="center" style={{ padding: '5px', fontSize: '20px' }}>
-          <Typography.Text>Nhat Hoang</Typography.Text>
+          <Typography.Text>{friendSuggestion.fullName}</Typography.Text>
         </Row>
         <Row justify="center" style={{ padding: '5px' }}>
           <Typography.Text>1 bạn chung</Typography.Text>
@@ -33,4 +36,5 @@ export default function SuggetionFriendItem() {
       </Col>
     </>
   );
-}
+};
+export default SuggetionFriendItem;

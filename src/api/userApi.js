@@ -50,6 +50,10 @@ const userApi = {
     const url = `/${USER_ENDPOINT}/friend/unfriend?friendId=${id}`;
     return axiosClient.patch(url);
   },
+  getListFriendSuggetion: () => {
+    const url = `/${USER_ENDPOINT}/friend/suggestion`;
+    return axiosClient.get(url);
+  },
 };
 
 export default userApi;
