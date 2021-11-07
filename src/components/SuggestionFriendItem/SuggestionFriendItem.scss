@@ -1,0 +1,11 @@
+.suggestion__friend {
+  &.content {
+    font-size: 18px;
+  }
+  &.content:hover {
+    background-color: rgb(244, 245, 247);
+  }
+  &.active {
+    background-color: rgb(244, 245, 247);
+  }
+}
