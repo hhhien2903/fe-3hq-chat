@@ -1,10 +1,7 @@
-*{
-
+* {
   font-family: 'Poppins', sans-serif;
 }
 .modal {
-  }
-
   .form-name {
     display: flex;
     flex-direction: column;
@@ -15,56 +12,58 @@
   .name-user {
     font-weight: bold;
   }
-  .form-header{
-      margin-bottom: 70px;
+  .form-header {
+    margin-bottom: 70px;
   }
   .avatar-container-profile {
-      height: 160px;
-      background: linear-gradient(to left,#b066fe,#63e2ff)
-    }
-  .upload-avatar{
-      transform: translate(130px,103px);
+    height: 160px;
+    background: linear-gradient(to left, #b066fe, #63e2ff);
   }
-  .btn-upload-vatar{
-    transform: translate(200px,83px);
+  .upload-avatar {
+    transform: translate(130px, 103px);
+  }
+  .btn-upload-vatar {
+    transform: translate(200px, 83px);
     .ant-upload-list {
       display: none;
     }
   }
-  
+
   .input-edit-name {
-     
-      margin-top: 50px;
-      height: 10px;
-      background: white;
-      text-align: center;
-      font-family: sans-serif;
+    margin-top: 50px;
+    height: 10px;
+    background: white;
+    text-align: center;
+    font-family: sans-serif;
   }
-  .input-edit-name h3{
-      font-weight: bold;
-      margin-left: 140px;
+  .input-edit-name h3 {
+    font-weight: bold;
+    margin-left: 140px;
   }
-.title{
-  text-align: center;
-  font-weight: bold;
-  font-size: 25px;
 }
-.member{
-  font-size: 15px;
-  font-weight: bold;
-  padding-right: 20px;
-}
-.info{
-  display: flex;
-  line-height: 10px;
-}
-.email{
-  font-size: 15px;
-  font-weight: bold;
-  padding-right: 60px;
-}
-.website{
-  font-size: 15px;
-  font-weight: bold;
-  padding-right: 40px;
+.modal-team-info {
+  .title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 25px;
+  }
+  .member {
+    font-size: 15px;
+    font-weight: bold;
+    padding-right: 20px;
+  }
+  .info {
+    display: flex;
+    line-height: 10px;
+  }
+  .email {
+    font-size: 15px;
+    font-weight: bold;
+    padding-right: 60px;
+  }
+  .website {
+    font-size: 15px;
+    font-weight: bold;
+    padding-right: 40px;
+  }
 }

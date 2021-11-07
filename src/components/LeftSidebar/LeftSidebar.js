@@ -121,11 +121,11 @@ function LeftSidebar() {
 
   const showModalInfoTeam = () => {
     const modalTeam = Modal.info({
-      title: 'Chat 3HQ',
-      size: '5300',
+      title: '3HQ - Web',
+      width: 500,
       okText: 'Xác nhận',
       content: (
-        <div className="container">
+        <div className="modal-team-info container">
           <h2 className="title">Nhóm 1</h2>
           <div className="info">
              <h4 className="email">Email:</h4>
@@ -136,10 +136,10 @@ function LeftSidebar() {
           <div className="info">
              <h4 className="member">Thành viên:</h4>
              <div>
-              <p>Nguyễn Thế Hậu</p>
-              <p>Hoàng Hữu Hiển</p>
-              <p>Phan Võ Nhật Hoàng</p>
-              <p>Võ Đại Quyền</p>
+              <p>Nguyễn Thế Hậu - 18050691</p>
+              <p>Hoàng Hữu Hiển - 18050261</p>
+              <p>Phan Võ Nhật Hoàng - 18095331</p>
+              <p>Võ Đại Quyền - 18056691</p>
              </div>
           </div>
           <div className="info">
@@ -176,7 +176,7 @@ function LeftSidebar() {
             </span>
           </Link>
         </li>
-        <li className="sidebar-item">
+        <li className="sidebar-item" style={{marginTop: 'auto'}}>
           <span className="sidebar-link">
             <MdInfo size={30} color="#FFFFFF" onClick={showModalInfoTeam} />
           </span>
