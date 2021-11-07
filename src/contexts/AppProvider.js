@@ -12,6 +12,10 @@ export default function AppProvider({ children }) {
   const [isAddFriendModalVisible, setIsAddFriendModalVisible] = useState(false);
   const [friends, setFriends] = useState([]);
   const [currentFriend, setCurrentFriend] = useState(null);
+  const [friendsSuggestion, setFriendsSuggestion] = useState([]);
+  const [currentFriendsSuggestion, setCurrentFriendsSuggestion] = useState([]);
+  const [friendsRequest, setFriendsRequest] = useState([]);
+  const [currentFriendsRequest, setCurrentFriendsRequest] = useState(null);
 
   const setupSocket = async () => {
     const newSocket = await io(process.env.REACT_APP_SOCKET_BASE_URL, {
@@ -22,6 +26,23 @@ export default function AppProvider({ children }) {
   useEffect(() => {
     setupSocket();
   }, []);
+
+  const getListFriendRequest = async () => {
+    try {
+      const listFriendRequest = await userApi.getListFriendRequest();
+      setFriendsRequest(listFriendRequest);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getListSuggestion = async () => {
+    try {
+      const listSuggestionsData = await userApi.getListFriendSuggetion();
+      setFriendsSuggestion(listSuggestionsData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const getFriendList = async () => {
     try {
       const friendsData = await userApi.getFriendList();
@@ -57,6 +78,16 @@ export default function AppProvider({ children }) {
         setFriends,
         currentFriend,
         setCurrentFriend,
+        getListSuggestion,
+        friendsSuggestion,
+        setFriendsSuggestion,
+        currentFriendsSuggestion,
+        setCurrentFriendsSuggestion,
+        getListFriendRequest,
+        friendsRequest,
+        setFriendsRequest,
+        currentFriendsRequest,
+        setCurrentFriendsRequest,
       }}
     >
       {children}

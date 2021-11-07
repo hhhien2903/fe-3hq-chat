@@ -2,11 +2,10 @@ import { Avatar, Button, Typography, notification, Row, Col } from 'antd';
 import React, { useContext } from 'react';
 import userApi from '../../api/userApi';
 import { AuthContext } from '../../contexts/AuthProvider';
-
+import './FriendRequestItem.scss';
 const FriendRequestItem = (props) => {
   const { userRequest } = props;
   const { user } = useContext(AuthContext);
-
   const handleAcceptFriend = async () => {
     const acceptFriend = {
       senderId: userRequest._id,
@@ -38,24 +37,32 @@ const FriendRequestItem = (props) => {
           margin: '0px 20px',
           height: '250px',
           borderRadius: '4px',
-          border: '1px solid #808080',
+          border: '1px solid #e1e4ea',
           background: 'white',
         }}
         span={5}
       >
-        <Row justify="center" style={{ paddingTop: '5px', margin: 'auto 0' }}>
-          <Avatar size={93} src={userRequest.avatar} />
+        <Row justify="center" style={{ padding: '10px' }}>
+          <Avatar size={100} src={userRequest.avatar} />
         </Row>
         <Row justify="center">
-          <Typography.Text style={{ padding: '0 0 10px 0', fontSize: '20px' }}>
+          <Typography.Text style={{ fontSize: '25px', padding: '15px' }}>
             {userRequest.fullName}
           </Typography.Text>
         </Row>
-        <Row justify="center">
-          <Button style={{ marginRight: '20px' }} onClick={handleAcceptFriend}>
+        <Row justify="center" style={{ padding: '10px' }}>
+          <Button
+            style={{
+              marginRight: '20px',
+            }}
+            type="primary"
+            onClick={handleAcceptFriend}
+          >
             Đồng ý
           </Button>
-          <Button onClick={handleRejectFriend}>Từ Chối</Button>
+          <Button danger type="primary" onClick={handleRejectFriend}>
+            Từ Chối
+          </Button>
         </Row>
       </Col>
     </>

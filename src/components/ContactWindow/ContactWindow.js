@@ -4,41 +4,55 @@ import userApi from '../../api/userApi';
 import FriendRequestItem from '../FriendRequestItem/FriendRequestItem';
 import './ContactWindow.scss';
 import { AppContext } from '../../contexts/AppProvider';
+import SuggestionFriendItem from '../SuggestionFriendItem/SuggestionFriendItem';
 export default function ContactWindow() {
-  const [idSender, setIdSender] = useState({});
-  const [senders, setSender] = useState([]);
-  const [listRequest, setListRequest] = useState([]);
-  const { setIsAddFriendModalVisible } = useContext(AppContext);
+  const [sender, setSender] = useState([]);
+  const {
+    setIsAddFriendModalVisible,
+    getListSuggestion,
+    friendsSuggestion,
+    currentFriendsSuggestion,
+    setCurrentFriendsSuggestion,
+    getListFriendRequest,
+    friendsRequest,
+  } = useContext(AppContext);
   useEffect(() => {
-    const getListFriendRequest = async () => {
-      try {
-        const listFriendRequest = await userApi.getListFriendRequest();
-        listFriendRequest.map((result) => {
-          const idSender = result.senderId;
-          setIdSender(idSender);
-        });
-        console.log(listFriendRequest);
-        setListRequest(listFriendRequest);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+    getListSuggestion();
+  }, []);
+  const handleSelected = (friendSuggestion) => {
+    setCurrentFriendsSuggestion(friendSuggestion);
+  };
+  const setClassName = (index) => {
+    if (friendsSuggestion[index]._id === currentFriendsSuggestion?._id) {
+      return 'suggestion__friend content active';
+    } else {
+      return 'suggestion__friend content';
+    }
+  };
+  useEffect(() => {
     getListFriendRequest();
   }, []);
-
+  const idUserRequest = friendsRequest.map((fr) => fr.senderId);
   useEffect(() => {
     const getUserSender = async () => {
       try {
-        const sender = await userApi.getUserById(idSender);
-        setSender(sender);
+        const listRequest = [];
+        for (let i = 0; i < idUserRequest.length; i++) {
+          listRequest.push(userApi.getUserById(idUserRequest[i]));
+        }
+        Promise.all(listRequest)
+          .then((res) => {
+            setSender(res);
+          })
+          .then(() => {
+            // console.log(sender);
+          });
       } catch (error) {
         console.log(error);
       }
     };
-    console.log(senders);
     getUserSender();
-  }, [idSender]);
-
+  }, [sender]);
   const showAddFriendModal = () => {
     setIsAddFriendModalVisible(true);
   };
@@ -60,7 +74,7 @@ export default function ContactWindow() {
           </Typography.Text>
         </Col>
       </Row>
-      {listRequest.length === 0 ? (
+      {!friendsRequest && !friendsSuggestion ? (
         <div
           style={{
             height: '90%',
@@ -91,15 +105,39 @@ export default function ContactWindow() {
           </Empty>
         </div>
       ) : (
-        <div className="suggetion-box">
-          <Collapse ghost defaultActiveKey={'1'}>
-            <Collapse.Panel header={`Lời mời kết bạn (${listRequest.length})`} key="1">
-              <Row gutter={[8, 16]}>
-                <FriendRequestItem userRequest={senders} />
-              </Row>
-            </Collapse.Panel>
-          </Collapse>
-        </div>
+        <>
+          <div className="contact-box">
+            <Collapse ghost defaultActiveKey={'1'}>
+              <Collapse.Panel header={`Lời mời kết bạn (${sender.length})`} key="1">
+                <Row gutter={[8, 16]}>
+                  {sender.map((friendRequest) => {
+                    return (
+                      <FriendRequestItem key={friendRequest._id} userRequest={friendRequest} />
+                    );
+                  })}
+                </Row>
+              </Collapse.Panel>
+            </Collapse>
+          </div>
+          <div className="suggestion-box ">
+            <Collapse ghost defaultActiveKey={'1'}>
+              <Collapse.Panel header={`Gợi ý kết bạn (${friendsSuggestion.length})`} key="1">
+                <Row gutter={[8, 16]}>
+                  {/* {friendsSuggestion.map((friendSuggestion, index) => {
+                    return (
+                      <SuggestionFriendItem
+                        key={friendSuggestion._id}
+                        friendSuggestion={friendSuggestion}
+                        handleSelected={handleSelected}
+                        cName={setClassName(index)}
+                      />
+                    );
+                  })} */}
+                </Row>
+              </Collapse.Panel>
+            </Collapse>
+          </div>
+        </>
       )}
     </div>
   );
