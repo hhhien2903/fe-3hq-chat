@@ -1,6 +1,10 @@
+*{
+
+  font-family: 'Poppins', sans-serif;
+}
 .modal {
-    animation: fadeIn ease-in 0.5s;
   }
+
   .form-name {
     display: flex;
     flex-direction: column;
@@ -40,3 +44,27 @@
       font-weight: bold;
       margin-left: 140px;
   }
+.title{
+  text-align: center;
+  font-weight: bold;
+  font-size: 25px;
+}
+.member{
+  font-size: 15px;
+  font-weight: bold;
+  padding-right: 20px;
+}
+.info{
+  display: flex;
+  line-height: 10px;
+}
+.email{
+  font-size: 15px;
+  font-weight: bold;
+  padding-right: 60px;
+}
+.website{
+  font-size: 15px;
+  font-weight: bold;
+  padding-right: 40px;
+}
