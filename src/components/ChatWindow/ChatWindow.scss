@@ -36,6 +36,7 @@
       //   overflow-y: scroll;
       //   -webkit-overflow-scrolling: touch;
       // }
+
       .styles_scrollable-div__prSCv {
         height: 100%;
       }
@@ -104,9 +105,13 @@
       display: none;
     }
   }
-  // .toolbar-container {
-  //   position: relative;
-  //   overflow-y: scroll;
-  //   height: 100vh;
-  // }
+}
+
+.modal-add-friend {
+  .ant-modal-content {
+    .ant-select-selection-item-content {
+      display: flex;
+      align-items: center;
+    }
+  }
 }
