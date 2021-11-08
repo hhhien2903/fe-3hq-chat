@@ -21,8 +21,13 @@ const RoomListItem = (props) => {
             <Avatar size={55} icon={<Image preview={false} src={room.avatarUrl} />} />
           )}
         </div>
-        <div className="room title">
-          <Typography.Text>{room.title}</Typography.Text>
+        <div className="room-preview">
+          <div className="room title">
+            <Typography.Text>{room.title}</Typography.Text>
+          </div>
+          <div className="room latest-message">
+            <Typography.Text>{room.latestMessage}</Typography.Text>
+          </div>
         </div>
       </div>
     </>

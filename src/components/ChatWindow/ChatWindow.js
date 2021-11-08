@@ -32,8 +32,9 @@ import removeAccents from '../../utils/removeAccents';
 import Message from '../Message/Message';
 import RoomToolbar from '../RoomToolbar/RoomToolbar';
 import './ChatWindow.scss';
+import roomApi from '../../api/roomApi';
 function ChatWindow() {
-  const { currentRoom, socket } = useContext(AppContext);
+  const { currentRoom, socket, setCurrentRoom } = useContext(AppContext);
   const { user } = useContext(AuthContext);
   const [activeToolbar, setActiveToolbar] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
@@ -45,6 +46,7 @@ function ChatWindow() {
   const [isAddFriendToRoomModalVisible, setIsAddFriendToRoomModalVisible] = useState(false);
   const [formAddFriendToRoom] = Form.useForm();
   const [friendList, setFriendList] = useState([]);
+  const [messagePageIndex, setMessagePageIndex] = useState(0);
   const handleActiveToolbar = () => {
     setActiveToolbar(!activeToolbar);
   };
@@ -76,13 +78,15 @@ function ChatWindow() {
   useEffect(() => {
     if (socket && currentRoom) {
       socket.on('receive', (message) => {
+        console.log('receive', message);
         setRoomMessages([...roomMessages, message]);
+        chatBoxScrollRef.current?.scrollIntoView({ behavior: 'auto', block: 'nearest' });
       });
     }
     return () => {
       socket?.off('receive');
     };
-  }, [roomMessages, socket, currentRoom]);
+  }, [currentRoom, roomMessages]);
 
   useEffect(() => {
     if (socket && currentRoom) {
@@ -92,8 +96,10 @@ function ChatWindow() {
       });
 
       socket.once('receiveAllMessage', async (data) => {
-        await setRoomMessages(data);
-        chatBoxScrollRef.current?.scrollToBottom();
+        await setRoomMessages(data.reverse());
+
+        // chatBoxScrollRef.current?.scrollToBottom();
+        chatBoxScrollRef.current?.scrollIntoView({ behavior: 'auto', block: 'nearest' });
         console.log('receiveAllMessage', data);
       });
     }
@@ -104,6 +110,8 @@ function ChatWindow() {
         socket.once('leftRoom', (data) => {
           console.log('left room', data);
         });
+        setMessagePageIndex(0);
+        console.log(messagePageIndex);
       }
     };
 
@@ -115,7 +123,7 @@ function ChatWindow() {
   const sendMessageToServer = (sendMessageData) => {
     if (socket) {
       socket.emit('send', sendMessageData);
-      chatBoxScrollRef.current.scrollToBottom();
+      chatBoxScrollRef.current?.scrollIntoView({ behavior: 'auto', block: 'nearest' });
     }
   };
 
@@ -227,7 +235,84 @@ function ChatWindow() {
     }
   };
 
-  const handleAddFriendToRoomConfirm = () => {};
+  const handleAddFriendToRoomConfirm = () => {
+    formAddFriendToRoom.validateFields().then(async (formValues) => {
+      const { selectedFriends } = formValues;
+      for (let friend of selectedFriends) {
+        if (currentRoom.members.some((member) => member._id === friend)) {
+          message.error({
+            content:
+              'Một/nhiều người bạn mà bạn chọn đã ở trong phòng, hãy xoá người đó và thử lại',
+            duration: 5,
+          });
+          return;
+        }
+        const res = await roomApi.addMemberToRoom(currentRoom._id, friend);
+        console.log(res);
+      }
+
+      message.loading({
+        content: 'Xin chờ giây lát...',
+        duration: 0,
+      });
+      setTimeout(() => {
+        setIsAddFriendToRoomModalVisible(false);
+        message.destroy();
+        message.success({
+          content: 'Thêm thành viên thành công',
+          duration: 5,
+        });
+      }, 3000);
+    });
+  };
+
+  const handleScroll = async (e) => {
+    let element = e.target;
+    if (element?.scrollTop === 0) {
+      const pageIndex = (await messagePageIndex) + 1;
+      await setMessagePageIndex(pageIndex);
+      // socket.emit('receive', (message) => {
+      //   console.log('receive', message);
+      //   setRoomMessages([...roomMessages, message]);
+      //   chatBoxScrollRef.current?.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+      // });
+      console.log(pageIndex);
+      socket.emit('loadOldMessage', {
+        roomId: currentRoom._id,
+        userId: user._id,
+        pageIndex: pageIndex,
+      });
+      socket.once('receiveOlderMessage', (oldMessages) => {
+        setRoomMessages([...oldMessages.reverse(), ...roomMessages]);
+        console.log('receiveOlderMessage', oldMessages);
+      });
+
+      // let cc = [
+      //   {
+      //     _id: '6185d8002af98f0023c83c00',
+      //     membersDeleted: [],
+      //     isRevoked: false,
+      //     isDeleted: false,
+      //     userId: {
+      //       _id: 'vWz2eibfyeMRk6Jwp08T0NQNMjN2',
+      //       avatar: 'https://ui-avatars.com/api/?name=Goose',
+      //       fullName: 'Goose',
+      //     },
+      //     roomId: '6185888f2af98f0023c8312e',
+      //     content: 'thằng nào tạo thế',
+      //     messageType: 0,
+      //     createdAt: '2021-11-06T01:18:56.287Z',
+      //     updatedAt: '2021-11-06T01:18:56.287Z',
+      //   },
+      // ];
+      // console.log('loz');
+      // let haha = [...cc, ...roomMessages];
+      // setRoomMessages(haha);
+      // console.log(haha);
+    }
+    // console.log(element);
+  };
+
   return (
     <>
       {currentRoom ? (
@@ -273,14 +358,19 @@ function ChatWindow() {
                 <Col flex="initial">
                   <Row justify="end" style={{ paddingRight: '10px' }}>
                     <AiOutlineSearch className="btn search" size={35} color="#394E60" />
-                    <AiOutlineUserAdd
-                      onClick={() => showAddFriendToRoomModal()}
-                      className="btn add-member"
-                      size={35}
-                      color="#394E60"
-                    />
+                    {currentRoom?.isGroup && (
+                      <AiOutlineUserAdd
+                        onClick={() => {
+                          formAddFriendToRoom.resetFields();
+                          showAddFriendToRoomModal();
+                        }}
+                        className="btn add-member"
+                        size={35}
+                        color="#394E60"
+                      />
+                    )}
                     <Modal
-                      className="model-add-friend"
+                      className="modal-add-friend"
                       title="Thêm bạn bè vào cuộc trò chuyện"
                       visible={isAddFriendToRoomModalVisible}
                       onCancel={() => {
@@ -353,13 +443,22 @@ function ChatWindow() {
               </Row>
 
               <div className="chat-box">
-                <ScrollableFeed ref={chatBoxScrollRef}>
+                {/* <ScrollableFeed ref={chatBoxScrollRef} onScroll={handleScroll}>
                   {roomMessages.map((roomMessage) => (
                     <Message key={roomMessage._id} message={roomMessage} />
                   ))}
-                </ScrollableFeed>
+                </ScrollableFeed> */}
 
-                {/* <div ref={chatBoxScrollRef} /> */}
+                <div
+                  onScroll={handleScroll}
+                  // ref={chatBoxScrollRef}
+                  style={{ height: '100%', overflow: 'auto' }}
+                >
+                  {roomMessages.map((roomMessage, index) => (
+                    <Message key={index} message={roomMessage} />
+                  ))}
+                  <div ref={chatBoxScrollRef} />
+                </div>
               </div>
 
               <Row className="chat-menu" align="middle">
