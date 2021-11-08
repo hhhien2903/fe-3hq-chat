@@ -28,9 +28,9 @@
       .ant-btn {
         width: 100%;
         text-align: left;
-        margin-bottom: 5px;
-        display: flex;
-        align-items: center;
+        // margin-bottom: 5px;
+        // display: flex;
+        // align-items: center;
       }
       .ant-btn:hover {
         border-color: #d7deeb;
@@ -42,6 +42,9 @@
         display: inline;
         margin-left: 10px;
         font-size: 15px;
+      }
+      .ant-upload-select {
+        width: 100%;
       }
     }
   }
