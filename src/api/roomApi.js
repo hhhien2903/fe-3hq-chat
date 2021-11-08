@@ -18,12 +18,20 @@ const roomApi = {
     const url = `/${ROOM_ENDPOINT}/add-member/${roomId}?userId=${userId}`;
     return axiosClient.put(url);
   },
+  removeMemberFromRoom: (roomId, userId) => {
+    const url = `/${ROOM_ENDPOINT}/remove-member/${roomId}?userId=${userId}`;
+    return axiosClient.put(url);
+  },
   createRoom: (data) => {
     const url = `/${ROOM_ENDPOINT}/groups`;
     return axiosClient.post(url, data);
   },
   updateRoom: (roomId, data) => {
     const url = `/${ROOM_ENDPOINT}/groups/${roomId}`;
+    return axiosClient.put(url, data);
+  },
+  updateRoomAvatar: (roomId, data) => {
+    const url = `/${ROOM_ENDPOINT}/upload/avatar?roomId=${roomId}`;
     return axiosClient.put(url, data);
   },
 };

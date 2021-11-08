@@ -51,7 +51,7 @@ const Home = () => {
       <Col className="sidebar" sm={2} lg={1}>
         <LeftSidebar />
       </Col>
-      <Col className="home-container" span={23}>
+      <Col className="home-container" sm={22} lg={23}>
         <div className="home-content">
           <h1 className="title">Chào mừng đến với 3HQ - Chat</h1>
           <Carousel className="carousel" autoplay autoplaySpeed={3000}>
