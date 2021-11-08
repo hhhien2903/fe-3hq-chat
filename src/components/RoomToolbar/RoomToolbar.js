@@ -20,10 +20,12 @@ import GroupMemberItem from '../GroupMemberItem/GroupMemberItem';
 import './RoomToolbar.scss';
 import ImgCrop from 'antd-img-crop';
 import userApi from '../../api/userApi';
+import { AuthContext } from '../../contexts/AuthProvider';
 
 const { Panel } = Collapse;
 function RoomToolbar() {
   const { currentRoom, setCurrentRoom, getRoomsList } = useContext(AppContext);
+  const { user } = useContext(AuthContext);
   const [formUpdateRoomTitle] = Form.useForm();
   const [isUpdateRoomTitleModalVisible, setIsUpdateRoomModalVisible] = useState(false);
   const handleUpdateRoomTitle = () => {
@@ -34,13 +36,11 @@ function RoomToolbar() {
           message.loading({ content: 'Xin đợi giây lát...', duration: 0 });
           const { roomTitle } = value;
           const data = {
-            ...currentRoom,
             title: roomTitle,
           };
           const updatedRoom = await roomApi.updateRoom(currentRoom._id, data);
           const roomData = await roomApi.getRoomById(updatedRoom._id);
           setCurrentRoom(roomData);
-          getRoomsList();
           formUpdateRoomTitle.resetFields();
           setIsUpdateRoomModalVisible(false);
           message.destroy();
@@ -55,7 +55,7 @@ function RoomToolbar() {
       })
       .catch((err) => {
         message.destroy();
-        message.success({
+        message.error({
           content: 'Cập nhật không thành công!, vui lòng thử lại sau',
           duration: 5,
         });
@@ -85,13 +85,13 @@ function RoomToolbar() {
       };
       const updatedRoom = await roomApi.updateRoom(currentRoom._id, data);
       const roomData = await roomApi.getRoomById(updatedRoom._id);
+
       setCurrentRoom(roomData);
-      getRoomsList();
       message.destroy();
       message.success({ content: 'Cập nhật thành công!', duration: 5 });
     } catch (error) {
       message.destroy();
-      message.success({ content: 'Cập nhật không thành công!, vui lòng thử lại sau', duration: 5 });
+      message.error({ content: 'Cập nhật không thành công!, vui lòng thử lại sau', duration: 5 });
       console.log(error);
     }
   };
@@ -128,85 +128,93 @@ function RoomToolbar() {
                   header="Tuỳ Chỉnh Cuộc Trò Chuyện"
                   key="1"
                 >
-                  {/* {currentRoom.creatorId === user._id && (
-                    
-                  )} */}
-                  <Button
-                    onClick={() => {
-                      formUpdateRoomTitle.setFieldsValue({ roomTitle: currentRoom.title });
-                      setIsUpdateRoomModalVisible(true);
-                    }}
-                    type="text"
-                    size={'large'}
-                    icon={<BiPencil size={18} />}
-                  >
-                    <p>Đổi tên cuộc trò chuyện</p>
-                  </Button>
-                  <Modal
-                    className="model-update-room-title"
-                    title="Đổi Tên Cuộc Trò Chuyện"
-                    visible={isUpdateRoomTitleModalVisible}
-                    onCancel={() => {
-                      setIsUpdateRoomModalVisible(false);
-                    }}
-                    footer={[
+                  {currentRoom.creatorId === user._id && (
+                    <>
                       <Button
-                        key="cancel"
                         onClick={() => {
+                          formUpdateRoomTitle.setFieldsValue({ roomTitle: currentRoom.title });
+                          setIsUpdateRoomModalVisible(true);
+                        }}
+                        type="text"
+                        size={'large'}
+                        icon={<BiPencil size={18} style={{ verticalAlign: 'sub' }} />}
+                      >
+                        <p>Đổi tên cuộc trò chuyện</p>
+                      </Button>
+                      <Modal
+                        className="model-update-room-title"
+                        title="Đổi Tên Cuộc Trò Chuyện"
+                        visible={isUpdateRoomTitleModalVisible}
+                        onCancel={() => {
                           setIsUpdateRoomModalVisible(false);
                         }}
-                      >
-                        Huỷ
-                      </Button>,
-                      <Button
-                        key="submit"
-                        type="primary"
-                        onClick={handleUpdateRoomTitle}
-                        htmlType="submit"
-                      >
-                        Xác Nhận
-                      </Button>,
-                    ]}
-                  >
-                    <Form
-                      initialValues={{ roomTitle: currentRoom.title }}
-                      form={formUpdateRoomTitle}
-                      layout="vertical"
-                    >
-                      <Form.Item
-                        rules={[
-                          {
-                            required: true,
-                            message: 'Tên cuộc trò chuyện không được để trống!',
-                          },
+                        footer={[
+                          <Button
+                            key="cancel"
+                            onClick={() => {
+                              setIsUpdateRoomModalVisible(false);
+                            }}
+                          >
+                            Huỷ
+                          </Button>,
+                          <Button
+                            key="submit"
+                            type="primary"
+                            onClick={handleUpdateRoomTitle}
+                            htmlType="submit"
+                          >
+                            Xác Nhận
+                          </Button>,
                         ]}
-                        name="roomTitle"
-                        label="Tên cuộc trò chuyện"
                       >
-                        <Input size="large" placeholder="Tên cuộc trò chuyện" />
-                      </Form.Item>
-                    </Form>
-                  </Modal>
+                        <Form
+                          initialValues={{ roomTitle: currentRoom.title }}
+                          form={formUpdateRoomTitle}
+                          layout="vertical"
+                        >
+                          <Form.Item
+                            rules={[
+                              {
+                                required: true,
+                                message: 'Tên cuộc trò chuyện không được để trống!',
+                              },
+                            ]}
+                            name="roomTitle"
+                            label="Tên cuộc trò chuyện"
+                          >
+                            <Input size="large" placeholder="Tên cuộc trò chuyện" />
+                          </Form.Item>
+                        </Form>
+                      </Modal>
 
-                  <ImgCrop
-                    {...checkFileIsImage}
-                    rotate
-                    modalTitle="Chỉnh sửa ảnh"
-                    modalOk="Xác Nhận"
-                    modalCancel="Huỷ"
+                      <ImgCrop
+                        {...checkFileIsImage}
+                        rotate
+                        modalTitle="Chỉnh sửa ảnh"
+                        modalOk="Xác Nhận"
+                        modalCancel="Huỷ"
+                      >
+                        <Upload
+                          customRequest={handleUploadRoomAvatar}
+                          progress={false}
+                          previewFile={false}
+                        >
+                          <Button
+                            type="text"
+                            size={'large'}
+                            icon={<BiImageAlt size={18} style={{ verticalAlign: 'sub' }} />}
+                          >
+                            <p>Đổi hình đại diện cuộc trò chuyện</p>
+                          </Button>
+                        </Upload>
+                      </ImgCrop>
+                    </>
+                  )}
+                  <Button
+                    type="text"
+                    size={'large'}
+                    icon={<BiExit size={18} color="red" style={{ verticalAlign: 'sub' }} />}
                   >
-                    <Upload
-                      customRequest={handleUploadRoomAvatar}
-                      progress={false}
-                      previewFile={false}
-                    >
-                      <Button type="text" size={'large'} icon={<BiImageAlt size={18} />}>
-                        <p>Đổi hình đại diện cuộc trò chuyện</p>
-                      </Button>
-                    </Upload>
-                  </ImgCrop>
-
-                  <Button type="text" size={'large'} icon={<BiExit size={18} color="red" />}>
                     <p style={{ color: 'red' }}>Rời khỏi cuộc trò chuyện</p>
                   </Button>
                 </Panel>
