@@ -16,10 +16,10 @@ const TopLeftBar = () => {
   const handleCreateRoom = () => {
     formCreateRoom
       .validateFields()
-      .then(async (value) => {
+      .then(async (formValues) => {
         try {
           message.loading({ content: 'Xin đợi giây lát...', duration: 0 });
-          const { selectedFriends, roomTitle } = value;
+          const { selectedFriends, roomTitle } = formValues;
           const data = {
             title: roomTitle,
             creatorId: user._id,
@@ -83,7 +83,7 @@ const TopLeftBar = () => {
               color="#394E60"
             />
             <Modal
-              className="model-create-room"
+              className="modal-create-room"
               title="Tạo Cuộc Trò Chuyện"
               visible={isCreateRoomModalVisible}
               onCancel={() => {
@@ -124,7 +124,7 @@ const TopLeftBar = () => {
                       required: true,
                       message: 'Hãy chọn ít nhất hai người bạn',
                       type: 'array',
-                      min: 2,
+                      min: 1,
                     },
                   ]}
                   name="selectedFriends"
@@ -135,6 +135,7 @@ const TopLeftBar = () => {
                     showSearch
                     optionFilterProp="children"
                     placeholder="Chọn bạn bè..."
+                    notFoundContent="Không tìm thấy"
                     mode="multiple"
                     style={{ height: '50px' }}
                   >

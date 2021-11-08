@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import roomApi from '../api/roomApi';
 import userApi from '../api/userApi';
-
+import isEqual from 'lodash.isequal';
 export const AppContext = React.createContext();
 
 export default function AppProvider({ children }) {
@@ -53,13 +53,37 @@ export default function AppProvider({ children }) {
   };
   const getRoomsList = async () => {
     try {
-      const roomsData = await roomApi.getRoomsByUser();
-      setRooms(roomsData);
-      console.log(roomsData);
+      const res = await roomApi.getRoomsByUser();
+      // const roomsData = res.map((room) => ({
+      //   _id: room._id,
+      //   title: room.title,
+      //   members: room.members,
+      //   latestMessage: room.latestMessage,
+      //   isGroup: room.isGroup,
+      //   isCloud: room.isCloud,
+      //   creatorId: room.creatorId,
+      //   createdAt: room.createdAt,
+      //   avatarUrl: room.avatarUrl,
+      // }));
+
+      // if (isEqual(roomsData, rooms) === false) {
+      //   console.log('running');
+      setRooms(res);
+      // }
     } catch (error) {
       console.log(error);
     }
   };
+
+  const updateRoomsListAfterUpdateCurrentRoom = (newRoomInfo) => {
+    const index = rooms.findIndex((room) => room._id === newRoomInfo._id);
+    console.log('currrent', rooms);
+    let cc = [...rooms];
+    cc.splice(index, 1, newRoomInfo);
+    console.log('cc', cc);
+    setRooms(cc);
+  };
+
   return (
     <AppContext.Provider
       value={{
