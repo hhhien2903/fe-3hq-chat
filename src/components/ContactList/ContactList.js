@@ -1,11 +1,12 @@
 import SimpleBar from 'simplebar-react';
 import { UserAddOutlined } from '@ant-design/icons';
 import { Typography, Avatar, Collapse, Modal, Button, Form, notification } from 'antd';
-import './ContactList.scss';
 import { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../../contexts/AppProvider';
 import ContactListItem from '../ContactListItem/ContactListItem';
 import userApi from '../../api/userApi';
+import './ContactList.scss';
+
 export default function ContactList() {
   const { setIsAddFriendModalVisible, currentFriend, setCurrentFriend, getFriendList, friends } =
     useContext(AppContext);
@@ -104,7 +105,7 @@ export default function ContactList() {
                 </Button>,
               ]}
             >
-              <div className="form-header">
+              <div className="modal-contact form-header">
                 <div className="avatar-container-profile">
                   <div className="upload-avatar">
                     <Avatar size={93} src={currentFriend.avatar} />

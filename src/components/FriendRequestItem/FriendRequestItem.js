@@ -1,4 +1,4 @@
-import { Avatar, Button, Typography, notification, Row, Col } from 'antd';
+import { Avatar, Button, Typography, notification, Row, Col, Space } from 'antd';
 import React, { useContext } from 'react';
 import userApi from '../../api/userApi';
 import { AuthContext } from '../../contexts/AuthProvider';
@@ -40,7 +40,9 @@ const FriendRequestItem = (props) => {
           border: '1px solid #e1e4ea',
           background: 'white',
         }}
-        span={5}
+        // span={5}
+        xs={{ span: 4, offset: 1 }}
+        lg={{ span: 5, offset: 2 }}
       >
         <Row justify="center" style={{ padding: '10px' }}>
           <Avatar size={100} src={userRequest.avatar} />
@@ -50,19 +52,15 @@ const FriendRequestItem = (props) => {
             {userRequest.fullName}
           </Typography.Text>
         </Row>
-        <Row justify="center" style={{ padding: '10px' }}>
-          <Button
-            style={{
-              marginRight: '20px',
-            }}
-            type="primary"
-            onClick={handleAcceptFriend}
-          >
-            Đồng ý
-          </Button>
-          <Button danger type="primary" onClick={handleRejectFriend}>
-            Từ Chối
-          </Button>
+        <Row justify="center">
+          <Space size="small">
+            <Button type="primary" onClick={handleAcceptFriend}>
+              Đồng ý
+            </Button>
+            <Button danger type="primary" onClick={handleRejectFriend}>
+              Từ Chối
+            </Button>
+          </Space>
         </Row>
       </Col>
     </>
