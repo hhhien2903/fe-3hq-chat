@@ -26,25 +26,45 @@
 .modal {
   animation: fadeIn ease-in 0.5s;
 }
-.form-name {
-  display: flex;
-  flex-direction: column;
-  width: 200px;
-  align-content: center;
-  margin-left: 1000px;
-}
-.name-user {
-  font-weight: bold;
-}
-.form-header {
-  margin-bottom: 70px;
-}
-.avatar-container-profile {
-  height: 160px;
-  background: linear-gradient(to left, #b066fe, #63e2ff);
-}
-.upload-avatar {
-  transform: translate(130px, 103px);
+.modal-contact {
+  .form-name {
+    display: flex;
+    flex-direction: column;
+    width: 200px;
+    align-content: center;
+    margin-left: 1000px;
+  }
+  .name-user {
+    font-weight: bold;
+  }
+  .form-header {
+    margin-bottom: 70px;
+  }
+  .avatar-container-profile {
+    height: 160px;
+    background: linear-gradient(to left, #b066fe, #63e2ff);
+  }
+  .upload-avatar {
+    transform: translate(130px, 103px);
+  }
+  .btn-upload-vatar {
+    transform: translate(200px, 83px);
+    .ant-upload-list {
+      display: none;
+    }
+  }
+
+  .input-edit-name {
+    margin-top: 50px;
+    height: 10px;
+    background: white;
+    text-align: center;
+    font-family: sans-serif;
+  }
+  .input-edit-name h3 {
+    font-weight: bold;
+    margin-left: 140px;
+  }
 }
 .btn-upload-vatar {
   transform: translate(200px, 83px);

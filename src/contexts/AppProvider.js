@@ -13,9 +13,7 @@ export default function AppProvider({ children }) {
   const [friends, setFriends] = useState([]);
   const [currentFriend, setCurrentFriend] = useState(null);
   const [friendsSuggestion, setFriendsSuggestion] = useState([]);
-  const [currentFriendsSuggestion, setCurrentFriendsSuggestion] = useState([]);
   const [friendsRequest, setFriendsRequest] = useState([]);
-  const [currentFriendsRequest, setCurrentFriendsRequest] = useState(null);
 
   const setupSocket = async () => {
     const newSocket = await io(process.env.REACT_APP_SOCKET_BASE_URL, {
@@ -80,13 +78,9 @@ export default function AppProvider({ children }) {
         getListSuggestion,
         friendsSuggestion,
         setFriendsSuggestion,
-        currentFriendsSuggestion,
-        setCurrentFriendsSuggestion,
         getListFriendRequest,
         friendsRequest,
         setFriendsRequest,
-        currentFriendsRequest,
-        setCurrentFriendsRequest,
       }}
     >
       {children}
