@@ -217,7 +217,7 @@ function LeftSidebar() {
               <div className="upload-avatar">
                 <Avatar
                   size={93}
-                  icon={<Image src={user.avatar} preview = {true }/>}
+                  src={user.avatar}
                 />
               </div>
               <div className="btn-upload-vatar">
