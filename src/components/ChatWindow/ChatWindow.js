@@ -22,7 +22,6 @@ import { AiOutlineInfoCircle, AiOutlineSearch, AiOutlineUserAdd } from 'react-ic
 import { FaRegFileImage, FaRegFileVideo, FaRegSmile } from 'react-icons/fa';
 import { ImAttachment } from 'react-icons/im';
 import { RiSendPlaneFill } from 'react-icons/ri';
-import ScrollableFeed from 'react-scrollable-feed';
 import SimpleBar from 'simplebar-react';
 import userApi from '../../api/userApi';
 import { AppContext } from '../../contexts/AppProvider';
@@ -47,6 +46,9 @@ function ChatWindow() {
   const [formAddFriendToRoom] = Form.useForm();
   const [friendList, setFriendList] = useState([]);
   const [messagePageIndex, setMessagePageIndex] = useState(0);
+  const firstMessageRef = useRef();
+  const scrollBar = useRef();
+
   const handleActiveToolbar = () => {
     setActiveToolbar(!activeToolbar);
   };
@@ -96,7 +98,7 @@ function ChatWindow() {
       });
 
       socket.once('receiveAllMessage', async (data) => {
-        await setRoomMessages(data.reverse());
+        await setRoomMessages(data);
 
         // chatBoxScrollRef.current?.scrollToBottom();
         chatBoxScrollRef.current?.scrollIntoView({ behavior: 'auto', block: 'nearest' });
@@ -266,51 +268,22 @@ function ChatWindow() {
     });
   };
 
-  const handleScroll = async (e) => {
+  const handleScroll = (e) => {
     let element = e.target;
     if (element?.scrollTop === 0) {
-      const pageIndex = (await messagePageIndex) + 1;
-      await setMessagePageIndex(pageIndex);
-      // socket.emit('receive', (message) => {
-      //   console.log('receive', message);
-      //   setRoomMessages([...roomMessages, message]);
-      //   chatBoxScrollRef.current?.scrollIntoView({ behavior: 'auto', block: 'nearest' });
-      // });
-      console.log(pageIndex);
+      const pageIndex = messagePageIndex + 1;
+      setMessagePageIndex(pageIndex);
       socket.emit('loadOldMessage', {
         roomId: currentRoom._id,
         userId: user._id,
         pageIndex: pageIndex,
       });
       socket.once('receiveOlderMessage', (oldMessages) => {
-        setRoomMessages([...oldMessages.reverse(), ...roomMessages]);
+        setRoomMessages([...oldMessages, ...roomMessages]);
         console.log('receiveOlderMessage', oldMessages);
+        firstMessageRef.current?.scrollIntoView({ behavior: 'auto' });
       });
-
-      // let cc = [
-      //   {
-      //     _id: '6185d8002af98f0023c83c00',
-      //     membersDeleted: [],
-      //     isRevoked: false,
-      //     isDeleted: false,
-      //     userId: {
-      //       _id: 'vWz2eibfyeMRk6Jwp08T0NQNMjN2',
-      //       avatar: 'https://ui-avatars.com/api/?name=Goose',
-      //       fullName: 'Goose',
-      //     },
-      //     roomId: '6185888f2af98f0023c8312e',
-      //     content: 'thằng nào tạo thế',
-      //     messageType: 0,
-      //     createdAt: '2021-11-06T01:18:56.287Z',
-      //     updatedAt: '2021-11-06T01:18:56.287Z',
-      //   },
-      // ];
-      // console.log('loz');
-      // let haha = [...cc, ...roomMessages];
-      // setRoomMessages(haha);
-      // console.log(haha);
     }
-    // console.log(element);
   };
 
   return (
@@ -338,14 +311,14 @@ function ChatWindow() {
                         <Avatar
                           style={{ margin: '0px 0px 0px 8px' }}
                           size={50}
-                          icon={<Image preview={false} src={currentRoom.members[0].avatar} />}
+                          src={currentRoom.members[0].avatar}
                         />
                       )
                     ) : (
                       <Avatar
+                        src={currentRoom.avatarUrl}
                         style={{ margin: '0px 0px 0px 8px' }}
                         size={50}
-                        icon={<Image preview={false} src={currentRoom.avatarUrl} />}
                       />
                     )}
                   </Row>
@@ -443,20 +416,18 @@ function ChatWindow() {
               </Row>
 
               <div className="chat-box">
-                {/* <ScrollableFeed ref={chatBoxScrollRef} onScroll={handleScroll}>
-                  {roomMessages.map((roomMessage) => (
-                    <Message key={roomMessage._id} message={roomMessage} />
-                  ))}
-                </ScrollableFeed> */}
-
                 <div
+                  ref={scrollBar}
                   onScroll={handleScroll}
-                  // ref={chatBoxScrollRef}
                   style={{ height: '100%', overflow: 'auto' }}
                 >
-                  {roomMessages.map((roomMessage, index) => (
-                    <Message key={index} message={roomMessage} />
-                  ))}
+                  {roomMessages.map((roomMessage, index, arr) =>
+                    arr.length - 20 * messagePageIndex === index ? (
+                      <Message ref={firstMessageRef} key={index} message={roomMessage} />
+                    ) : (
+                      <Message key={index} message={roomMessage} />
+                    ),
+                  )}
                   <div ref={chatBoxScrollRef} />
                 </div>
               </div>
