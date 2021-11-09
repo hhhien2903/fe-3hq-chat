@@ -12,47 +12,15 @@ import moment from 'moment';
 function Message(props, firstMessageRef) {
   const { user } = useContext(AuthContext);
   const { currentRoom } = useContext(AppContext);
-  const { message } = props;
-
-  const handleDelete = () => {
-    const confirmDeleteModal = Modal.confirm({
-      title: 'Xác Nhận',
-      content: 'Bạn có muốn xoá tin nhắn này',
-      okText: 'Xoá',
-      okType: 'danger',
-      cancelText: 'Không',
-      onOk() {
-        console.log(`xoá ${message._id}`);
-      },
-      onCancel() {
-        confirmDeleteModal.destroy();
-      },
-    });
-  };
-
-  const handleRevoke = () => {
-    const confirmDeleteModal = Modal.confirm({
-      title: 'Xác Nhận',
-      content: 'Bạn có muốn thu hồi tin nhắn này',
-      okText: 'Thu hồi',
-      okType: 'danger',
-      cancelText: 'Không',
-      onOk() {
-        console.log(`thu hồi ${message._id}`);
-      },
-      onCancel() {
-        confirmDeleteModal.destroy();
-      },
-    });
-  };
+  const { message, handleRevokeMessage, handleDeleteMessage } = props;
 
   const menu = (
     <Menu>
-      <Menu.Item key="0">
-        <span onClick={() => handleDelete()}>Xoá tin nhắn</span>
+      <Menu.Item onClick={() => handleDeleteMessage(message)} key="0">
+        <span>Xoá tin nhắn</span>
       </Menu.Item>
       <Menu.Item key="1">
-        <span onClick={() => handleRevoke()}>Thu hồi tin nhắn</span>
+        <span onClick={() => handleRevokeMessage(message)}>Thu hồi tin nhắn</span>
       </Menu.Item>
     </Menu>
   );
