@@ -15,10 +15,10 @@ const RoomListItem = (props) => {
                 <Avatar style={{ marginLeft: '-18px' }} src={room.members[1].avatar} />
               </Avatar.Group>
             ) : (
-              <Avatar size={55} icon={<Image preview={false} src={room.members[0].avatar} />} />
+              <Avatar size={55} src={room.members[0].avatar} />
             )
           ) : (
-            <Avatar size={55} icon={<Image preview={false} src={room.avatarUrl} />} />
+            <Avatar size={55} src={room.avatarUrl} />
           )}
         </div>
         <div className="room-preview">

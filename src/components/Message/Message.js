@@ -1,6 +1,10 @@
 import { Avatar, Image, Menu, Dropdown, Modal, message as messageNotify } from 'antd';
+<<<<<<< HEAD
 import React, { useContext } from 'react';
 import Moment from 'react-moment';
+=======
+import React, { useContext, forwardRef } from 'react';
+>>>>>>> testing6
 import { AuthContext } from '../../contexts/AuthProvider';
 import MessageType from '../../enums/messageType';
 import ReactPlayer from 'react-player/lazy';
@@ -10,7 +14,7 @@ import videoThumbnail from '../../assets/images/video_thumbnail.jpg';
 import { AppContext } from '../../contexts/AppProvider';
 import moment from 'moment';
 
-function Message(props) {
+function Message(props, firstMessageRef) {
   const { user } = useContext(AuthContext);
   const { currentRoom } = useContext(AppContext);
   const { message } = props;
@@ -61,7 +65,7 @@ function Message(props) {
   return (
     <>
       {message.userId._id === user._id ? (
-        <div className="message own">
+        <div ref={firstMessageRef} className="message own">
           <div className="message-content">
             {currentRoom.isGroup && <p className="group-sender-name">{message.userId.fullName}</p>}
 
@@ -120,7 +124,7 @@ function Message(props) {
           </div>
         </div>
       ) : (
-        <div className="message">
+        <div ref={firstMessageRef} className="message">
           <div className="message-avatar">
             <Avatar size={40} src={message.userId.avatar} />
           </div>
@@ -174,4 +178,4 @@ function Message(props) {
   );
 }
 
-export default Message;
+export default forwardRef(Message);
