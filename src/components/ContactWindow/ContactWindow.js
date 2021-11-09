@@ -11,24 +11,12 @@ export default function ContactWindow() {
     setIsAddFriendModalVisible,
     getListSuggestion,
     friendsSuggestion,
-    currentFriendsSuggestion,
-    setCurrentFriendsSuggestion,
     getListFriendRequest,
     friendsRequest,
   } = useContext(AppContext);
   useEffect(() => {
     getListSuggestion();
   }, []);
-  const handleSelected = (friendSuggestion) => {
-    setCurrentFriendsSuggestion(friendSuggestion);
-  };
-  const setClassName = (index) => {
-    if (friendsSuggestion[index]._id === currentFriendsSuggestion?._id) {
-      return 'suggestion__friend content active';
-    } else {
-      return 'suggestion__friend content';
-    }
-  };
   useEffect(() => {
     getListFriendRequest();
   }, []);
@@ -74,7 +62,7 @@ export default function ContactWindow() {
           </Typography.Text>
         </Col>
       </Row>
-      {!friendsRequest && !friendsSuggestion ? (
+      {friendsRequest.length === 0 && friendsSuggestion.length === 0 ? (
         <div
           style={{
             height: '90%',
@@ -128,8 +116,6 @@ export default function ContactWindow() {
                       <SuggestionFriendItem
                         key={friendSuggestion._id}
                         friendSuggestion={friendSuggestion}
-                        handleSelected={handleSelected}
-                        cName={setClassName(index)}
                       />
                     );
                   })} */}

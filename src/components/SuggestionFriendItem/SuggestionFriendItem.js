@@ -1,11 +1,13 @@
 import React from 'react';
 import { Avatar, Button, Col, Row, Typography } from 'antd';
 const SuggetionFriendItem = (props) => {
-  const { friendSuggestion, cName, handleSelected } = props;
+  const { friendSuggestion } = props;
+  const handSendFriendRequest = () => {
+    console.log('Đã gửi lời mời kết bạn');
+  };
   return (
     <>
       <Col
-        className={cName}
         style={{
           margin: '0px 20px',
           height: '250px',
@@ -14,7 +16,6 @@ const SuggetionFriendItem = (props) => {
           background: 'white',
         }}
         span={5}
-        onClick={() => handleSelected(friendSuggestion)}
       >
         <Row justify="center" style={{ paddingTop: '5px' }}>
           <Avatar size={93} src={friendSuggestion.avatar} />
@@ -29,7 +30,10 @@ const SuggetionFriendItem = (props) => {
           <Typography.Text>Gợi ý kết bạn</Typography.Text>
         </Row>
         <Row justify="center" style={{ padding: '5px' }}>
-          <Button style={{ color: '#fff', borderColor: '#1890ff', background: '#1890ff' }}>
+          <Button
+            style={{ color: '#fff', borderColor: '#1890ff', background: '#1890ff' }}
+            onClick={handSendFriendRequest}
+          >
             Kết bạn
           </Button>
         </Row>

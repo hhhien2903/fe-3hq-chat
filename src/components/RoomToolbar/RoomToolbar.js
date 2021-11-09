@@ -95,6 +95,47 @@ function RoomToolbar() {
       console.log(error);
     }
   };
+
+  const handleExitRoom = async () => {
+    const confirmExitRoomModal = Modal.confirm({
+      title: 'Xác Nhận',
+      content: 'Bạn có muốn rời khỏi cuộc trò chuyện này?',
+      okText: 'Có',
+      okType: 'danger',
+      cancelText: 'Không',
+      onOk: async () => {
+        try {
+          const res = roomApi.leaveRoom(currentRoom._id);
+          console.log(res);
+          message.loading({
+            content: 'Xin chờ giây lát...',
+            duration: 0,
+          });
+          setTimeout(() => {
+            message.destroy();
+            message.success({
+              content: 'Rời khỏi cuộc trò chuyện thành công',
+              duration: 5,
+            });
+          }, 3000);
+        } catch (error) {
+          message.error({
+            content: 'Rời khỏi cuộc trò chuyện thành công không thành công, xin thử lại sau!',
+            duration: 5,
+          });
+        }
+      },
+      onCancel() {
+        confirmExitRoomModal.destroy();
+      },
+    });
+    // message.destroy();
+    // message.success({ content: 'Cập nhật thành công!', duration: 5 });
+
+    // message.destroy();
+    // message.error({ content: 'Cập nhật không thành công!, vui lòng thử lại sau', duration: 5 });
+    // console.log(error);
+  };
   return (
     <>
       <Row className="toolbar">
@@ -213,6 +254,7 @@ function RoomToolbar() {
                   <Button
                     type="text"
                     size={'large'}
+                    onClick={handleExitRoom}
                     icon={<BiExit size={18} color="red" style={{ verticalAlign: 'sub' }} />}
                   >
                     <p style={{ color: 'red' }}>Rời khỏi cuộc trò chuyện</p>

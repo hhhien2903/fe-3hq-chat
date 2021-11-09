@@ -34,6 +34,10 @@ const roomApi = {
     const url = `/${ROOM_ENDPOINT}/upload/avatar?roomId=${roomId}`;
     return axiosClient.put(url, data);
   },
+  leaveRoom: (roomId) => {
+    const url = `/${ROOM_ENDPOINT}/leave/group?roomId=${roomId}`;
+    return axiosClient.patch(url);
+  },
 };
 
 export default roomApi;
