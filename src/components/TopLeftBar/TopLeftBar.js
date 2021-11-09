@@ -124,7 +124,7 @@ const TopLeftBar = () => {
                       required: true,
                       message: 'Hãy chọn ít nhất hai người bạn',
                       type: 'array',
-                      min: 1,
+                      min: 2,
                     },
                   ]}
                   name="selectedFriends"

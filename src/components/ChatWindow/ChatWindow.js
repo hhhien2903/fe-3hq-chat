@@ -280,9 +280,61 @@ function ChatWindow() {
       socket.once('receiveOlderMessage', (oldMessages) => {
         setRoomMessages([...oldMessages, ...roomMessages]);
         console.log('receiveOlderMessage', oldMessages);
+        console.log(firstMessageRef.current);
         firstMessageRef.current?.scrollIntoView({ behavior: 'auto' });
       });
     }
+  };
+
+  const handleRevokeMessage = (revokeMessage) => {
+    const confirmRevokeMessageModal = Modal.confirm({
+      title: 'Xác Nhận',
+      content: 'Bạn có muốn thu hồi tin nhắn này',
+      okText: 'Thu hồi',
+      okType: 'danger',
+      cancelText: 'Không',
+      onOk() {
+        socket.emit('revokeMessage', {
+          roomId: currentRoom._id,
+          userId: user._id,
+          messageId: revokeMessage._id,
+        });
+        console.log(`thu hồi ${revokeMessage._id}`);
+      },
+      onCancel() {
+        confirmRevokeMessageModal.destroy();
+      },
+    });
+  };
+
+  const handleDeleteMessage = (deleteMessage) => {
+    const confirmDeleteMessageModal = Modal.confirm({
+      title: 'Xác Nhận',
+      content: 'Bạn có muốn xoá tin nhắn này?',
+      okText: 'Xoá',
+      okType: 'danger',
+      cancelText: 'Không',
+      onOk() {
+        socket.emit('deleteMessage', {
+          roomId: currentRoom._id,
+          userId: user._id,
+          messageId: deleteMessage._id,
+        });
+        // const deletedMessageIndex = roomMessages.findIndex(
+        //   (roomMessage) => roomMessage._id === deleteMessage._id,
+        // );
+        setRoomMessages((currentRoomMessages) =>
+          currentRoomMessages.filter(
+            (currentRoomMessage) => currentRoomMessage._id !== deleteMessage._id,
+          ),
+        );
+        // console.log(`${deletedMessageIndex}`);
+        // console.log(haha);
+      },
+      onCancel() {
+        confirmDeleteMessageModal.destroy();
+      },
+    });
   };
 
   return (
@@ -422,9 +474,20 @@ function ChatWindow() {
                 >
                   {roomMessages.map((roomMessage, index, arr) =>
                     arr.length - 20 * messagePageIndex === index ? (
-                      <Message ref={firstMessageRef} key={index} message={roomMessage} />
+                      <Message
+                        ref={firstMessageRef}
+                        handleDeleteMessage={handleDeleteMessage}
+                        handleRevokeMessage={handleRevokeMessage}
+                        key={index}
+                        message={roomMessage}
+                      />
                     ) : (
-                      <Message key={index} message={roomMessage} />
+                      <Message
+                        handleDeleteMessage={handleDeleteMessage}
+                        handleRevokeMessage={handleRevokeMessage}
+                        key={index}
+                        message={roomMessage}
+                      />
                     ),
                   )}
                   <div ref={chatBoxScrollRef} />
