@@ -1,10 +1,5 @@
 import { Avatar, Image, Menu, Dropdown, Modal, message as messageNotify } from 'antd';
-<<<<<<< HEAD
-import React, { useContext } from 'react';
-import Moment from 'react-moment';
-=======
 import React, { useContext, forwardRef } from 'react';
->>>>>>> testing6
 import { AuthContext } from '../../contexts/AuthProvider';
 import MessageType from '../../enums/messageType';
 import ReactPlayer from 'react-player/lazy';
