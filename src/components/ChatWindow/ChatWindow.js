@@ -3,16 +3,15 @@ import {
   Avatar,
   Button,
   Col,
-  Image,
+  Form,
   Input,
   message,
+  Modal,
   Row,
+  Select,
   Tooltip,
   Typography,
   Upload,
-  Form,
-  Select,
-  Modal,
 } from 'antd';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
@@ -23,6 +22,7 @@ import { FaRegFileImage, FaRegFileVideo, FaRegSmile } from 'react-icons/fa';
 import { ImAttachment } from 'react-icons/im';
 import { RiSendPlaneFill } from 'react-icons/ri';
 import SimpleBar from 'simplebar-react';
+import roomApi from '../../api/roomApi';
 import userApi from '../../api/userApi';
 import { AppContext } from '../../contexts/AppProvider';
 import { AuthContext } from '../../contexts/AuthProvider';
@@ -31,13 +31,13 @@ import removeAccents from '../../utils/removeAccents';
 import Message from '../Message/Message';
 import RoomToolbar from '../RoomToolbar/RoomToolbar';
 import './ChatWindow.scss';
-import roomApi from '../../api/roomApi';
 function ChatWindow() {
   const { currentRoom, socket, setCurrentRoom } = useContext(AppContext);
   const { user } = useContext(AuthContext);
   const [activeToolbar, setActiveToolbar] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
   const [showEmojis, setShowEmojis] = useState(false);
+  const [showSearchMessage, setShowSearchMessage] = useState(false);
   const [cursorPosition, setCursorPosition] = useState();
   const [roomMessages, setRoomMessages] = useState([]);
   const inputRef = useRef();
@@ -79,10 +79,17 @@ function ChatWindow() {
 
   useEffect(() => {
     if (socket && currentRoom) {
-      socket.on('receive', (message) => {
-        console.log('receive', message);
-        setRoomMessages([...roomMessages, message]);
+      socket.on('receive', (receiveMessage) => {
+        console.log('receive', receiveMessage);
+        setRoomMessages([...roomMessages, receiveMessage]);
         chatBoxScrollRef.current?.scrollIntoView({ behavior: 'auto', block: 'nearest' });
+        if (receiveMessage.messageType !== MessageType.TEXT) {
+          message.destroy();
+          message.success({
+            content: 'Upload thành công',
+            duration: 5,
+          });
+        }
       });
     }
     return () => {
@@ -96,12 +103,9 @@ function ChatWindow() {
       socket.once('joinedRoom', (data) => {
         console.log('join room', data);
       });
-
-      socket.once('receiveAllMessage', async (data) => {
-        await setRoomMessages(data);
-        // chatBoxScrollRef.current?.scrollToBottom();
-        chatBoxScrollRef.current?.scrollIntoView({ behavior: 'auto', block: 'nearest' });
-        console.log('receiveAllMessage', data);
+      socket.once('receiveAllMessage', (data) => {
+        setRoomMessages(data);
+        chatBoxScrollRef.current?.scrollIntoView({ behavior: 'auto', block: 'end' });
       });
     }
 
@@ -109,10 +113,10 @@ function ChatWindow() {
       if (socket && currentRoom) {
         socket.emit('leaveRoom', { roomId: currentRoom._id, userId: user._id });
         socket.once('leftRoom', (data) => {
+          setShowSearchMessage(false);
           console.log('left room', data);
         });
         setMessagePageIndex(0);
-        console.log(messagePageIndex);
       }
     };
 
@@ -124,7 +128,6 @@ function ChatWindow() {
   const sendMessageToServer = (sendMessageData) => {
     if (socket) {
       socket.emit('send', sendMessageData);
-      chatBoxScrollRef.current?.scrollIntoView({ behavior: 'auto', block: 'nearest' });
     }
   };
 
@@ -145,7 +148,7 @@ function ChatWindow() {
     const formData = new FormData();
     formData.append('file', fileData.file);
     try {
-      message.loading({ content: 'Xin đợi giây lát...', key: 'uploadImageKey', duration: 3 });
+      message.loading({ content: 'Xin đợi giây lát...', duration: 0 });
       const imageData = await userApi.uploadFile(formData);
       const sendMessageData = {
         userId: user._id,
@@ -163,7 +166,7 @@ function ChatWindow() {
     const formData = new FormData();
     formData.append('file', fileData.file);
     try {
-      message.loading({ content: 'Xin đợi giây lát...', key: 'uploadVideoKey', duration: 3 });
+      message.loading({ content: 'Xin đợi giây lát...', duration: 0 });
       const videoData = await userApi.uploadFile(formData);
       const sendMessageData = {
         userId: user._id,
@@ -185,7 +188,7 @@ function ChatWindow() {
     formData.append('file', fileTransform);
 
     try {
-      message.loading({ content: 'Xin đợi giây lát...', key: 'uploadVideoKey', duration: 3 });
+      message.loading({ content: 'Xin đợi giây lát...', duration: 0 });
       const file = await userApi.uploadFile(formData);
       const sendMessageData = {
         userId: user._id,
@@ -195,7 +198,6 @@ function ChatWindow() {
         fileName: fileData.file.name,
       };
       sendMessageToServer(sendMessageData);
-      console.log(file);
     } catch (error) {
       console.log(error);
     }
@@ -230,7 +232,6 @@ function ChatWindow() {
     try {
       const res = await userApi.getFriendList(user);
       setFriendList(res.friends);
-      console.log(res.friends);
     } catch (error) {
       console.log(error);
     }
@@ -239,35 +240,43 @@ function ChatWindow() {
   const handleAddFriendToRoomConfirm = () => {
     formAddFriendToRoom.validateFields().then(async (formValues) => {
       const { selectedFriends } = formValues;
-      for (let friend of selectedFriends) {
-        if (currentRoom.members.some((member) => member._id === friend)) {
-          message.error({
-            content:
-              'Một/nhiều người bạn mà bạn chọn đã ở trong phòng, hãy xoá người đó và thử lại',
+      try {
+        message.loading({
+          content: 'Xin chờ giây lát...',
+          duration: 0,
+        });
+        for (let friend of selectedFriends) {
+          if (currentRoom.members.some((member) => member._id === friend)) {
+            message.destroy();
+            message.error({
+              content:
+                'Một/nhiều người bạn mà bạn chọn đã ở trong phòng, hãy xoá người đó và thử lại',
+              duration: 5,
+            });
+            return;
+          }
+          const res = await roomApi.addMemberToRoom(currentRoom._id, friend);
+        }
+
+        setTimeout(() => {
+          setIsAddFriendToRoomModalVisible(false);
+          message.destroy();
+          message.success({
+            content: 'Thêm thành viên thành công',
             duration: 5,
           });
-          return;
-        }
-        const res = await roomApi.addMemberToRoom(currentRoom._id, friend);
-        console.log(res);
-      }
-
-      message.loading({
-        content: 'Xin chờ giây lát...',
-        duration: 0,
-      });
-      setTimeout(() => {
-        setIsAddFriendToRoomModalVisible(false);
+        }, 3000);
+      } catch (error) {
         message.destroy();
-        message.success({
-          content: 'Thêm thành viên thành công',
+        message.error({
+          content: 'Thêm thành viên thành công không thành công, xin thử lại sau!',
           duration: 5,
         });
-      }, 3000);
+      }
     });
   };
 
-  const handleScroll = (e) => {
+  const handleScrollLoadOldMessage = (e) => {
     let element = e.target;
     if (element?.scrollTop === 0) {
       const pageIndex = messagePageIndex + 1;
@@ -279,9 +288,8 @@ function ChatWindow() {
       });
       socket.once('receiveOlderMessage', (oldMessages) => {
         setRoomMessages([...oldMessages, ...roomMessages]);
-        console.log('receiveOlderMessage', oldMessages);
-        console.log(firstMessageRef.current);
-        firstMessageRef.current?.scrollIntoView({ behavior: 'auto' });
+
+        firstMessageRef.current?.scrollIntoView({ behavior: 'auto', block: 'start' });
       });
     }
   };
@@ -299,7 +307,6 @@ function ChatWindow() {
           userId: user._id,
           messageId: revokeMessage._id,
         });
-        console.log(`thu hồi ${revokeMessage._id}`);
       },
       onCancel() {
         confirmRevokeMessageModal.destroy();
@@ -320,21 +327,25 @@ function ChatWindow() {
           userId: user._id,
           messageId: deleteMessage._id,
         });
-        // const deletedMessageIndex = roomMessages.findIndex(
-        //   (roomMessage) => roomMessage._id === deleteMessage._id,
-        // );
+
         setRoomMessages((currentRoomMessages) =>
           currentRoomMessages.filter(
             (currentRoomMessage) => currentRoomMessage._id !== deleteMessage._id,
           ),
         );
-        // console.log(`${deletedMessageIndex}`);
-        // console.log(haha);
       },
       onCancel() {
         confirmDeleteMessageModal.destroy();
       },
     });
+  };
+
+  const onSearch = (value) => {
+    if (value.target.value === '') {
+      console.log('cac');
+      return;
+    }
+    console.log(value.target.value);
   };
 
   return (
@@ -381,17 +392,49 @@ function ChatWindow() {
                 </Col>
                 <Col flex="initial">
                   <Row justify="end" style={{ paddingRight: '10px' }}>
-                    <AiOutlineSearch className="btn search" size={35} color="#394E60" />
+                    {showSearchMessage ? (
+                      <>
+                        <Input
+                          placeholder="Tìm kiếm tin nhắn..."
+                          allowClear
+                          onChange={(e) => onSearch(e)}
+                          // onPressEnter={onSearch}
+                          prefix={<AiOutlineSearch size={20} />}
+                          style={{ width: 210, borderRadius: '40px' }}
+                        />
+
+                        <Button
+                          className="btn-close-search-message"
+                          onClick={() => setShowSearchMessage(false)}
+                          type="text"
+                        >
+                          Đóng
+                        </Button>
+                      </>
+                    ) : (
+                      <Tooltip title="Tìm kiếm tin nhắn">
+                        <AiOutlineSearch
+                          className="btn search"
+                          onClick={() => {
+                            setShowSearchMessage(!showSearchMessage);
+                          }}
+                          size={35}
+                          color="#394E60"
+                        />
+                      </Tooltip>
+                    )}
                     {currentRoom?.isGroup && (
-                      <AiOutlineUserAdd
-                        onClick={() => {
-                          formAddFriendToRoom.resetFields();
-                          showAddFriendToRoomModal();
-                        }}
-                        className="btn add-member"
-                        size={35}
-                        color="#394E60"
-                      />
+                      <Tooltip placement="topRight" title="Thêm bạn bè vào cuộc trò chuyện">
+                        <AiOutlineUserAdd
+                          onClick={() => {
+                            formAddFriendToRoom.resetFields();
+                            showAddFriendToRoomModal();
+                          }}
+                          className="btn add-member"
+                          size={35}
+                          color="#394E60"
+                        />
+                      </Tooltip>
                     )}
                     <Modal
                       className="modal-add-friend"
@@ -456,12 +499,14 @@ function ChatWindow() {
                         </Form.Item>
                       </Form>
                     </Modal>
-                    <AiOutlineInfoCircle
-                      className="btn info"
-                      size={35}
-                      color="#394E60"
-                      onClick={() => handleActiveToolbar()}
-                    />
+                    <Tooltip placement="topRight" title="Thông tin cuộc trò chuyện">
+                      <AiOutlineInfoCircle
+                        className="btn info"
+                        size={35}
+                        color="#394E60"
+                        onClick={() => handleActiveToolbar()}
+                      />
+                    </Tooltip>
                   </Row>
                 </Col>
               </Row>
@@ -469,7 +514,7 @@ function ChatWindow() {
               <div className="chat-box">
                 <div
                   ref={scrollBar}
-                  onScroll={handleScroll}
+                  onScroll={handleScrollLoadOldMessage}
                   style={{ height: '100%', overflow: 'auto' }}
                 >
                   {roomMessages.map((roomMessage, index, arr) =>
