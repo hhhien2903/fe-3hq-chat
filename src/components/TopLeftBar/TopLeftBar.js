@@ -11,7 +11,7 @@ const TopLeftBar = () => {
   const [formCreateRoom] = Form.useForm();
   const [friendList, setFriendList] = useState([]);
   const { user } = useContext(AuthContext);
-  const { setRooms } = useContext(AppContext);
+  const { setSearchRoomTerm } = useContext(AppContext);
 
   const handleCreateRoom = () => {
     formCreateRoom
@@ -25,13 +25,11 @@ const TopLeftBar = () => {
             creatorId: user._id,
             members: [user._id, ...selectedFriends],
           };
-          const createdRoom = await roomApi.createRoom(data);
-          const roomData = await roomApi.getRoomById(createdRoom._id);
-          console.log(roomData);
+          await roomApi.createRoom(data);
 
-          setRooms((prev) => [...prev, roomData]);
           setIsCreateRoomModalVisible(false);
           formCreateRoom.resetFields();
+
           message.destroy();
           message.success({ content: 'Tạo phòng thành công!', duration: 3 });
         } catch (error) {
@@ -65,14 +63,16 @@ const TopLeftBar = () => {
             <Input
               className="input-search"
               allowClear
-              placeholder="Tìm kiếm"
+              onChange={(e) => {
+                setSearchRoomTerm(e.target.value);
+              }}
+              placeholder="Tìm kiếm cuộc trò chuyện..."
               prefix={<AiOutlineSearch size={20} />}
             />
           </Row>
         </Col>
         <Col flex="initial">
           <Row>
-            {/* <AiOutlineUserAdd className="btn add-friend" size={33} color="#394E60" /> */}
             <AiOutlineUsergroupAdd
               onClick={() => {
                 setIsCreateRoomModalVisible(true);

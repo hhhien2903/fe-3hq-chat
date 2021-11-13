@@ -1,5 +1,7 @@
 import { Carousel, Col, Row } from 'antd';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import OneSignal from 'react-onesignal';
+import pushApi from '../../api/pushApi';
 import imgWelcome2 from '../../assets/images/home2.jpg';
 import imgWelcome3 from '../../assets/images/home3.jpg';
 import imgWelcome4 from '../../assets/images/home4.jpg';
@@ -7,9 +9,6 @@ import LeftSidebar from '../../components/LeftSidebar/LeftSidebar';
 import { firebase } from '../../config/firebase';
 import { AppContext } from '../../contexts/AppProvider';
 import { AuthContext } from '../../contexts/AuthProvider';
-import OneSignal from 'react-onesignal';
-import { useState } from 'react';
-import pushApi from '../../api/pushApi';
 import './Home.scss';
 
 const Home = () => {
