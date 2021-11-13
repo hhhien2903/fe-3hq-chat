@@ -1,13 +1,13 @@
-import { Avatar, Image, Menu, Dropdown, Modal, message as messageNotify } from 'antd';
-import React, { useContext, forwardRef } from 'react';
-import { AuthContext } from '../../contexts/AuthProvider';
-import MessageType from '../../enums/messageType';
-import ReactPlayer from 'react-player/lazy';
-import './Message.scss';
+import { Avatar, Dropdown, Image, Menu } from 'antd';
+import moment from 'moment';
+import React, { forwardRef, useContext } from 'react';
 import { BsFileEarmarkFill } from 'react-icons/bs';
+import ReactPlayer from 'react-player/lazy';
 import videoThumbnail from '../../assets/images/video_thumbnail.jpg';
 import { AppContext } from '../../contexts/AppProvider';
-import moment from 'moment';
+import { AuthContext } from '../../contexts/AuthProvider';
+import MessageType from '../../enums/messageType';
+import './Message.scss';
 
 function Message(props, firstMessageRef) {
   const { user } = useContext(AuthContext);
