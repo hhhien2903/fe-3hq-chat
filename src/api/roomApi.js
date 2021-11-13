@@ -31,7 +31,7 @@ const roomApi = {
     return axiosClient.put(url, data);
   },
   updateRoomAvatar: (roomId, data) => {
-    const url = `/${ROOM_ENDPOINT}/upload/avatar?roomId=${roomId}`;
+    const url = `/${ROOM_ENDPOINT}/upload/avatar/${roomId}`;
     return axiosClient.put(url, data);
   },
   leaveRoom: (roomId) => {

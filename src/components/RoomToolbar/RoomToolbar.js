@@ -24,7 +24,7 @@ import { AuthContext } from '../../contexts/AuthProvider';
 
 const { Panel } = Collapse;
 function RoomToolbar() {
-  const { currentRoom, setCurrentRoom, getRoomsList } = useContext(AppContext);
+  const { currentRoom } = useContext(AppContext);
   const { user } = useContext(AuthContext);
   const [formUpdateRoomTitle] = Form.useForm();
   const [isUpdateRoomTitleModalVisible, setIsUpdateRoomModalVisible] = useState(false);
@@ -33,18 +33,20 @@ function RoomToolbar() {
       .validateFields()
       .then(async (value) => {
         try {
-          message.loading({ content: 'Xin đợi giây lát...', duration: 0 });
+          message.loading({
+            content: 'Xin chờ giây lát...',
+            duration: 0,
+          });
           const { roomTitle } = value;
           const data = {
             title: roomTitle,
           };
           const updatedRoom = await roomApi.updateRoom(currentRoom._id, data);
-          const roomData = await roomApi.getRoomById(updatedRoom._id);
-          setCurrentRoom(roomData);
-          formUpdateRoomTitle.resetFields();
           setIsUpdateRoomModalVisible(false);
-          message.destroy();
-          message.success({ content: 'Cập nhật thành công!', duration: 5 });
+          setTimeout(() => {
+            message.destroy();
+            message.success({ content: 'Cập nhật thành công!', duration: 5 });
+          }, 3000);
         } catch (error) {
           message.destroy();
           message.error({
@@ -75,20 +77,19 @@ function RoomToolbar() {
 
   const handleUploadRoomAvatar = async (fileData) => {
     try {
-      message.loading({ content: 'Xin đợi giây lát...', duration: 0 });
+      message.loading({
+        content: 'Xin chờ giây lát...',
+        duration: 0,
+      });
       const formData = new FormData();
-      formData.append('file', fileData.file);
-      const imageData = await userApi.uploadFile(formData);
-      const data = {
-        ...currentRoom,
-        avatarUrl: imageData.url,
-      };
-      const updatedRoom = await roomApi.updateRoom(currentRoom._id, data);
-      const roomData = await roomApi.getRoomById(updatedRoom._id);
-
-      setCurrentRoom(roomData);
-      message.destroy();
-      message.success({ content: 'Cập nhật thành công!', duration: 5 });
+      formData.append('avatar', fileData.file);
+      const res = await roomApi.updateRoomAvatar(currentRoom._id, formData);
+      if (res) {
+        setTimeout(() => {
+          message.destroy();
+          message.success({ content: 'Cập nhật thành công!', duration: 5 });
+        }, 3000);
+      }
     } catch (error) {
       message.destroy();
       message.error({ content: 'Cập nhật không thành công!, vui lòng thử lại sau', duration: 5 });
@@ -106,7 +107,6 @@ function RoomToolbar() {
       onOk: async () => {
         try {
           const res = roomApi.leaveRoom(currentRoom._id);
-          console.log(res);
           message.loading({
             content: 'Xin chờ giây lát...',
             duration: 0,
@@ -119,6 +119,7 @@ function RoomToolbar() {
             });
           }, 3000);
         } catch (error) {
+          message.destroy();
           message.error({
             content: 'Rời khỏi cuộc trò chuyện thành công không thành công, xin thử lại sau!',
             duration: 5,
@@ -129,12 +130,6 @@ function RoomToolbar() {
         confirmExitRoomModal.destroy();
       },
     });
-    // message.destroy();
-    // message.success({ content: 'Cập nhật thành công!', duration: 5 });
-
-    // message.destroy();
-    // message.error({ content: 'Cập nhật không thành công!, vui lòng thử lại sau', duration: 5 });
-    // console.log(error);
   };
   return (
     <>
