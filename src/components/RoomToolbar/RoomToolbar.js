@@ -2,25 +2,18 @@ import {
   Avatar,
   Button,
   Col,
-  Collapse,
-  Image,
-  Row,
-  Typography,
-  Form,
-  Modal,
-  Input,
-  message,
-  Upload,
+  Collapse, Form, Image, Input,
+  message, Modal, Row,
+  Typography, Upload
 } from 'antd';
+import ImgCrop from 'antd-img-crop';
 import { useContext, useState } from 'react';
 import { BiExit, BiImageAlt, BiPencil } from 'react-icons/bi';
 import roomApi from '../../api/roomApi';
 import { AppContext } from '../../contexts/AppProvider';
+import { AuthContext } from '../../contexts/AuthProvider';
 import GroupMemberItem from '../GroupMemberItem/GroupMemberItem';
 import './RoomToolbar.scss';
-import ImgCrop from 'antd-img-crop';
-import userApi from '../../api/userApi';
-import { AuthContext } from '../../contexts/AuthProvider';
 
 const { Panel } = Collapse;
 function RoomToolbar() {

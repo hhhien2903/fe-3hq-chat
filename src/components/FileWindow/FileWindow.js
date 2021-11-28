@@ -11,7 +11,7 @@ export default function FileWindow() {
     const listFile = async () => {
       try {
         const listFile = await userApi.getListFile();
-        if (listFile.data) {
+        if (listFile) {
           setFile(listFile);
         } else {
           return;
@@ -69,6 +69,7 @@ export default function FileWindow() {
         columns={colums}
         dataSource={file}
         pagination={{ pageSize: 50, position: ['none', 'none'] }}
+        locale={{ emptyText: 'Không có file nào' }}
         scroll={{ y: 800 }}
       />
     </div>

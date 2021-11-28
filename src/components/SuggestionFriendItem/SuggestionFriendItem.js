@@ -12,11 +12,23 @@ const SuggetionFriendItem = (props) => {
       senderId: user._id,
       receiverId: friendSuggestion._id,
     };
-    const sendRequest = await userApi.postSendFriendRequest(friendRequest);
-    if (sendRequest) {
+    try {
+      const sendRequest = await userApi.postSendFriendRequest(friendRequest);
+      if (sendRequest) {
+        notification.open({
+          message: 'Thông báo',
+          description: 'Đã gửi lời mời kết bạn cho ' + friendSuggestion.fullName,
+          duration: 2,
+        });
+      }
+    } catch (error) {
+      const message =
+        error?.status === 500 && error.message
+          ? 'Hệ thống đang bảo trì, bạn vui lòng quay lại sau!'
+          : error.message;
       notification.open({
         message: 'Thông báo',
-        description: 'Đã gửi lời mời kết bạn cho ' + friendSuggestion.fullName,
+        description: message,
         duration: 2,
       });
     }
