@@ -8,8 +8,14 @@ import userApi from '../../api/userApi';
 import './ContactList.scss';
 
 export default function ContactList() {
-  const { setIsAddFriendModalVisible, currentFriend, setCurrentFriend, getFriendList, friends } =
-    useContext(AppContext);
+  const {
+    setIsAddFriendModalVisible,
+    currentFriend,
+    setCurrentFriend,
+    getFriendList,
+    friends,
+    searchContactTerm,
+  } = useContext(AppContext);
   const [isContactModalVisible, setIsContactModalVisible] = useState(false);
   useEffect(() => {
     getFriendList();
@@ -179,16 +185,26 @@ export default function ContactList() {
           <Collapse className="contact-list-collapse" ghost defaultActiveKey={'1'}>
             <Collapse.Panel header={`Bạn bè (${friends.length})`} key="1">
               <div className="contact-list scrollable">
-                {friends.map((friend, index) => {
-                  return (
-                    <ContactListItem
-                      key={friend._id}
-                      cName={setFriendClassName(index)}
-                      handleSelected={handleSelected}
-                      friend={friend}
-                    />
-                  );
-                })}
+                {friends
+                  .filter((friend) => {
+                    if (searchContactTerm == '') {
+                      return friend;
+                    } else if (
+                      friend.fullName.toLowerCase().includes(searchContactTerm.toLowerCase())
+                    ) {
+                      return friend;
+                    }
+                  })
+                  .map((friend, index) => {
+                    return (
+                      <ContactListItem
+                        key={friend._id}
+                        cName={setFriendClassName(index)}
+                        handleSelected={handleSelected}
+                        friend={friend}
+                      />
+                    );
+                  })}
               </div>
             </Collapse.Panel>
           </Collapse>
