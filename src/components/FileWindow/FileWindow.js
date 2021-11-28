@@ -11,7 +11,11 @@ export default function FileWindow() {
     const listFile = async () => {
       try {
         const listFile = await userApi.getListFile();
-        setFile(listFile);
+        if (listFile.data) {
+          setFile(listFile);
+        } else {
+          return;
+        }
       } catch (error) {
         console.log(error);
       }
