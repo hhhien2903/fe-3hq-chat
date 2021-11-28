@@ -1,4 +1,4 @@
-import { Avatar, Button, Typography, notification, Row, Col, Space } from 'antd';
+import { Avatar, Button, Col, notification, Row, Space, Typography } from 'antd';
 import React, { useContext } from 'react';
 import userApi from '../../api/userApi';
 import { AuthContext } from '../../contexts/AuthProvider';

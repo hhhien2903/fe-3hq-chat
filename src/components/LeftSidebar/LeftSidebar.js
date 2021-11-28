@@ -6,23 +6,21 @@ import {
   Input,
   message,
   Modal,
-  notification,
-  Image,
-  Radio,
+  notification, Radio,
   Tooltip,
   Typography,
-  Upload,
+  Upload
 } from 'antd';
 import ImgCrop from 'antd-img-crop';
 import localeVN from 'antd/es/date-picker/locale/vi_VN';
 import FormData from 'form-data';
 import moment from 'moment';
 import React, { useContext, useState } from 'react';
+import { AiFillFile, AiTwotoneBell } from 'react-icons/ai';
 import { BsFillCameraFill } from 'react-icons/bs';
-import { MdInfo } from 'react-icons/md';
 import { GoSignOut } from 'react-icons/go';
 import { IoChatbubbleEllipses, IoPeople } from 'react-icons/io5';
-import { AiTwotoneBell, AiFillFile } from 'react-icons/ai';
+import { MdInfo } from 'react-icons/md';
 import { Link, useHistory } from 'react-router-dom';
 import userApi from '../../api/userApi';
 import { firebaseAuth } from '../../config/firebase';
