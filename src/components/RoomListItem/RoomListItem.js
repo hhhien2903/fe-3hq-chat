@@ -1,4 +1,4 @@
-import { Avatar, Image, Typography } from 'antd';
+import { Avatar, Typography } from 'antd';
 import './RoomListItem.scss';
 
 const RoomListItem = (props) => {
