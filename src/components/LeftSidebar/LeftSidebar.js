@@ -201,7 +201,6 @@ function LeftSidebar() {
           </span>
         </li>
       </ul>
-      {/* <ModalUserInfo isVisible={isModalVisible}/> */}
       <div className="modal-user">
         <Modal
           className="modal"
