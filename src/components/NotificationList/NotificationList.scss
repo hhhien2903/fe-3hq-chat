@@ -1,0 +1,49 @@
+.notification {
+  &.container {
+    height: 100vh;
+  }
+  &.title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #72808e;
+  }
+}
+.noti {
+  cursor: pointer;
+  &.content {
+    height: 70px;
+    padding: 5px 10px;
+    display: flex;
+    border-radius: 8px;
+  }
+  &.icon {
+    align-self: center;
+    flex: initial;
+    width: 60px;
+  }
+  &.title {
+    height: fit-content;
+    font-size: 18px;
+    padding-left: 10px;
+    margin: auto 0px;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: red;
+  }
+  &.content:hover {
+    background-color: rgb(244, 245, 247);
+  }
+  &.content {
+    cursor: pointer;
+  }
+  &.active {
+    background-color: rgb(244, 245, 247);
+  }
+  &.time {
+    margin: auto 0px;
+  }
+}

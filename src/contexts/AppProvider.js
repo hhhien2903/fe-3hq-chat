@@ -14,7 +14,8 @@ export default function AppProvider({ children }) {
   const [friendsSuggestion, setFriendsSuggestion] = useState([]);
   const [friendsRequest, setFriendsRequest] = useState([]);
   const [searchRoomTerm, setSearchRoomTerm] = useState('');
-
+  const [searchContactTerm, setSearchContactTerm] = useState('');
+  const [listNotification, setListNotification] = useState([]);
   const setupSocket = async () => {
     const newSocket = await io(process.env.REACT_APP_SOCKET_BASE_URL, {
       transports: ['websocket'],
@@ -25,6 +26,14 @@ export default function AppProvider({ children }) {
     setupSocket();
   }, []);
 
+  const getListNotification = async () => {
+    try {
+      const listNotifications = await userApi.getListNotification();
+      setListNotification(listNotifications);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const getListFriendRequest = async () => {
     try {
       const listFriendRequest = await userApi.getListFriendRequest();
@@ -84,6 +93,11 @@ export default function AppProvider({ children }) {
         setFriendsRequest,
         searchRoomTerm,
         setSearchRoomTerm,
+        searchContactTerm,
+        setSearchContactTerm,
+        listNotification,
+        setListNotification,
+        getListNotification,
       }}
     >
       {children}

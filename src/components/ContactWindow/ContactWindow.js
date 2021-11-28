@@ -111,14 +111,14 @@ export default function ContactWindow() {
             <Collapse ghost defaultActiveKey={'1'}>
               <Collapse.Panel header={`Gợi ý kết bạn (${friendsSuggestion.length})`} key="1">
                 <Row gutter={[8, 16]}>
-                  {/* {friendsSuggestion.map((friendSuggestion, index) => {
+                  {friendsSuggestion.map((friendSuggestion, index) => {
                     return (
                       <SuggestionFriendItem
                         key={friendSuggestion._id}
                         friendSuggestion={friendSuggestion}
                       />
                     );
-                  })} */}
+                  })}
                 </Row>
               </Collapse.Panel>
             </Collapse>
