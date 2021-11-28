@@ -3,8 +3,7 @@ import ContactList from '../../components/ContactList/ContactList';
 import ContactWindow from '../../components/ContactWindow/ContactWindow';
 import ModalAddFriend from '../../components/ContactWindow/ModalAddFriend';
 import LeftSidebar from '../../components/LeftSidebar/LeftSidebar';
-import SuggetionFriendWindow from '../../components/SuggetionFriendWindow/SuggetionFriendWindow';
-import TopLeftBar from '../../components/TopLeftBar/TopLeftBar';
+import TopLeftBarContact from '../../components/TopLeftBar/TopLeftBarContact';
 const Contact = () => {
   return (
     <Row style={{ height: '100vh' }} className="contact">
@@ -12,7 +11,7 @@ const Contact = () => {
         <LeftSidebar />
       </Col>
       <Col className="contact-list-container" sm={6} lg={5}>
-        <TopLeftBar />
+        <TopLeftBarContact />
         <ContactList />
         <ModalAddFriend />
       </Col>

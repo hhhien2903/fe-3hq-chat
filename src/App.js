@@ -8,6 +8,8 @@ import Contact from './pages/Contact/Contact';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
+import Notifications from './pages/Notification/Notifications';
+import Files from './pages/File/File';
 function App() {
   return (
     <BrowserRouter>
@@ -25,6 +27,12 @@ function App() {
             </Route>
             <Route exact path="/contact">
               <Contact />
+            </Route>
+            <Route exact path="/notification">
+              <Notifications />
+            </Route>
+            <Route exact path="/file">
+              <Files />
             </Route>
             <Route exact path="/register">
               <Register />

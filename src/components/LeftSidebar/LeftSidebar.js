@@ -22,6 +22,7 @@ import { BsFillCameraFill } from 'react-icons/bs';
 import { MdInfo } from 'react-icons/md';
 import { GoSignOut } from 'react-icons/go';
 import { IoChatbubbleEllipses, IoPeople } from 'react-icons/io5';
+import { AiTwotoneBell, AiFillFile } from 'react-icons/ai';
 import { Link, useHistory } from 'react-router-dom';
 import userApi from '../../api/userApi';
 import { firebaseAuth } from '../../config/firebase';
@@ -172,6 +173,20 @@ function LeftSidebar() {
           <Link to="/contact">
             <span className="sidebar-link">
               <IoPeople size={30} width="30px" color="#FFFFFF" />
+            </span>
+          </Link>
+        </li>
+        <li className="sidebar-item">
+          <Link to="/notification">
+            <span className="sidebar-link">
+              <AiTwotoneBell size={30} width="30px" color="#FFFFFF" />
+            </span>
+          </Link>
+        </li>
+        <li className="sidebar-item">
+          <Link to="/file">
+            <span className="sidebar-link">
+              <AiFillFile size={30} width="30px" color="#FFFFFF" />
             </span>
           </Link>
         </li>
