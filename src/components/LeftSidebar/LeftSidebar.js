@@ -22,6 +22,7 @@ import { BsFillCameraFill } from 'react-icons/bs';
 import { MdInfo } from 'react-icons/md';
 import { GoSignOut } from 'react-icons/go';
 import { IoChatbubbleEllipses, IoPeople } from 'react-icons/io5';
+import { AiTwotoneBell, AiFillFile } from 'react-icons/ai';
 import { Link, useHistory } from 'react-router-dom';
 import userApi from '../../api/userApi';
 import { firebaseAuth } from '../../config/firebase';
@@ -43,7 +44,6 @@ function LeftSidebar() {
     setIsModalVisible(true);
   };
 
- 
   const checkFileIsImage = {
     beforeUpload: (file) => {
       if (!file['type'].includes('image')) {
@@ -128,25 +128,25 @@ function LeftSidebar() {
         <div className="modal-team-info container">
           <h2 className="title">Nhóm 1</h2>
           <div className="info">
-             <h4 className="email">Email:</h4>
-             <div>
+            <h4 className="email">Email:</h4>
+            <div>
               <p>3hqchatapp@gmail.com</p>
-             </div>
+            </div>
           </div>
           <div className="info">
-             <h4 className="member">Thành viên:</h4>
-             <div>
+            <h4 className="member">Thành viên:</h4>
+            <div>
               <p>Nguyễn Thế Hậu - 18050691</p>
               <p>Hoàng Hữu Hiển - 18050261</p>
               <p>Phan Võ Nhật Hoàng - 18095331</p>
               <p>Võ Đại Quyền - 18056691</p>
-             </div>
+            </div>
           </div>
           <div className="info">
-             <h4 className="website">Website:</h4>
-             <div>
+            <h4 className="website">Website:</h4>
+            <div>
               <a href="https://chat.3hq.social/">https://chat.3hq.social</a>
-             </div>
+            </div>
           </div>
         </div>
       ),
@@ -176,7 +176,21 @@ function LeftSidebar() {
             </span>
           </Link>
         </li>
-        <li className="sidebar-item" style={{marginTop: 'auto'}}>
+        <li className="sidebar-item">
+          <Link to="/notification">
+            <span className="sidebar-link">
+              <AiTwotoneBell size={30} width="30px" color="#FFFFFF" />
+            </span>
+          </Link>
+        </li>
+        <li className="sidebar-item">
+          <Link to="/file">
+            <span className="sidebar-link">
+              <AiFillFile size={30} width="30px" color="#FFFFFF" />
+            </span>
+          </Link>
+        </li>
+        <li className="sidebar-item" style={{ marginTop: 'auto' }}>
           <span className="sidebar-link">
             <MdInfo size={30} color="#FFFFFF" onClick={showModalInfoTeam} />
           </span>
@@ -215,27 +229,20 @@ function LeftSidebar() {
           <div className="form-header">
             <div className="avatar-container-profile">
               <div className="upload-avatar">
-                <Avatar
-                  size={93}
-                  src={user.avatar}
-                />
+                <Avatar size={93} src={user.avatar} />
               </div>
               <div className="btn-upload-vatar">
                 <Tooltip title="Tải ảnh lên">
                   <ImgCrop
-                   {...checkFileIsImage}
-                   rotate
+                    {...checkFileIsImage}
+                    rotate
                     modalTitle="Chỉnh sửa ảnh"
                     modalOk="Xác Nhận"
                     modalCancel="Huỷ"
                   >
-                  <Upload
-                    previewFile={false}
-                    customRequest={handleUploadAvatar}
-                    progress={false}
-                  >
-                    {<BsFillCameraFill />}
-                  </Upload>
+                    <Upload previewFile={false} customRequest={handleUploadAvatar} progress={false}>
+                      {<BsFillCameraFill />}
+                    </Upload>
                   </ImgCrop>
                 </Tooltip>
               </div>

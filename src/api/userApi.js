@@ -54,6 +54,14 @@ const userApi = {
     const url = `/${USER_ENDPOINT}/friend/suggestion`;
     return axiosClient.get(url);
   },
+  getListNotification: () => {
+    const url = `/${USER_ENDPOINT}/group/notification`;
+    return axiosClient.get(url);
+  },
+  getListFile: () => {
+    const url = `/${USER_ENDPOINT}/file/list`;
+    return axiosClient.get(url);
+  },
 };
 
 export default userApi;
