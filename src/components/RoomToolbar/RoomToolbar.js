@@ -2,25 +2,38 @@ import {
   Avatar,
   Button,
   Col,
-  Collapse, Form, Image, Input,
-  message, Modal, Row,
-  Typography, Upload
+  Collapse,
+  Image,
+  Row,
+  Typography,
+  Form,
+  Modal,
+  Input,
+  message,
+  Upload,
+  List,
 } from 'antd';
-import ImgCrop from 'antd-img-crop';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { BiExit, BiImageAlt, BiPencil } from 'react-icons/bi';
 import roomApi from '../../api/roomApi';
 import { AppContext } from '../../contexts/AppProvider';
-import { AuthContext } from '../../contexts/AuthProvider';
 import GroupMemberItem from '../GroupMemberItem/GroupMemberItem';
+import { BsFileEarmarkFill } from 'react-icons/bs';
 import './RoomToolbar.scss';
+import ImgCrop from 'antd-img-crop';
+import videoThumbnail from '../../assets/images/video_thumbnail.jpg';
+import MessageType from '../../enums/messageType';
+import { AuthContext } from '../../contexts/AuthProvider';
+import ReactPlayer from 'react-player/lazy';
 
 const { Panel } = Collapse;
 function RoomToolbar() {
-  const { currentRoom } = useContext(AppContext);
+  const { currentRoom, socket } = useContext(AppContext);
   const { user } = useContext(AuthContext);
   const [formUpdateRoomTitle] = Form.useForm();
   const [isUpdateRoomTitleModalVisible, setIsUpdateRoomModalVisible] = useState(false);
+  const [imageVideoMessage, setImageVideoMessage] = useState([]);
+  const [fileMessage, setFileMessage] = useState([]);
   const handleUpdateRoomTitle = () => {
     formUpdateRoomTitle
       .validateFields()
@@ -34,7 +47,7 @@ function RoomToolbar() {
           const data = {
             title: roomTitle,
           };
-          const updatedRoom = await roomApi.updateRoom(currentRoom._id, data);
+          await roomApi.updateRoom(currentRoom._id, data);
           setIsUpdateRoomModalVisible(false);
           setTimeout(() => {
             message.destroy();
@@ -124,6 +137,31 @@ function RoomToolbar() {
       },
     });
   };
+
+  const handleChangeActivePanel = (keyPanel) => {
+    if (keyPanel.includes('3')) {
+      socket.emit('loadAllMessage', { roomId: currentRoom._id });
+      socket.once('receiveAllMessages', (messages) => {
+        const messageImageVideo = messages.filter(
+          (message) =>
+            message.messageType === MessageType.IMAGE || message.messageType === MessageType.VIDEO,
+        );
+
+        setImageVideoMessage(messageImageVideo);
+      });
+    }
+    if (keyPanel.includes('4')) {
+      socket.emit('loadAllMessage', { roomId: currentRoom._id });
+      socket.once('receiveAllMessages', (messages) => {
+        const messageFile = messages.filter((message) => {
+          return message.messageType === MessageType.FILE;
+        });
+
+        setFileMessage(messageFile);
+      });
+    }
+  };
+
   return (
     <>
       <Row className="toolbar">
@@ -149,7 +187,7 @@ function RoomToolbar() {
           </div>
         </Col>
         <Col span={24}>
-          <Collapse className="toolbar-menu" ghost>
+          <Collapse onChange={handleChangeActivePanel} className="toolbar-menu" ghost>
             {currentRoom?.isGroup && (
               <>
                 <Panel
@@ -260,8 +298,57 @@ function RoomToolbar() {
                 </Panel>
               </>
             )}
-            <Panel header="Tệp Tin" key="3">
-              <p>haha</p>
+            <Panel header="Ảnh/Video" key="3">
+              <List
+                locale={{ emptyText: 'Không có dữ liệu' }}
+                grid={{ gutter: 5, column: 3 }}
+                dataSource={imageVideoMessage}
+                renderItem={(item) => (
+                  <List.Item style={{ display: 'flex', justifyContent: 'center' }}>
+                    {item.messageType === MessageType.IMAGE ? (
+                      <Image
+                        style={{ objectFit: 'cover', borderRadius: '10px' }}
+                        width={95}
+                        height={95}
+                        src={item.content}
+                      />
+                    ) : (
+                      <ReactPlayer
+                        width={95}
+                        height={95}
+                        playing={false}
+                        controls={true}
+                        url={item.content}
+                        light={videoThumbnail}
+                      />
+                    )}
+                  </List.Item>
+                )}
+              />
+            </Panel>
+            <Panel header="Tệp Tin" key="4">
+              <List
+                locale={{ emptyText: 'Không có dữ liệu' }}
+                grid={{ gutter: 5, column: 1 }}
+                dataSource={fileMessage}
+                renderItem={(item) => (
+                  <List.Item>
+                    <a href={item.content}>
+                      <div className="messageFile" s>
+                        <Avatar
+                          className="file-icon"
+                          style={{
+                            backgroundColor: '#FFFFFF',
+                          }}
+                          size={35}
+                          icon={<BsFileEarmarkFill color={'#000000'} />}
+                        />
+                        <p className="file-name">{item.fileName}</p>
+                      </div>
+                    </a>
+                  </List.Item>
+                )}
+              />
             </Panel>
           </Collapse>
         </Col>
