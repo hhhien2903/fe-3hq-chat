@@ -11,7 +11,7 @@ import {
   Select,
   Tooltip,
   Typography,
-  Upload
+  Upload,
 } from 'antd';
 import { Picker } from 'emoji-mart';
 import 'emoji-mart/css/emoji-mart.css';
@@ -32,7 +32,7 @@ import Message from '../Message/Message';
 import RoomToolbar from '../RoomToolbar/RoomToolbar';
 import './ChatWindow.scss';
 function ChatWindow() {
-  const { currentRoom, socket, setCurrentRoom } = useContext(AppContext);
+  const { currentRoom, socket } = useContext(AppContext);
   const { user } = useContext(AuthContext);
   const [activeToolbar, setActiveToolbar] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
@@ -117,6 +117,7 @@ function ChatWindow() {
         socket.once('leftRoom', (data) => {
           setShowSearchMessage(false);
           console.log('left room', data);
+          setActiveToolbar(false);
         });
         setMessagePageIndex(0);
       }
