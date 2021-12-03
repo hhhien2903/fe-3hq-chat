@@ -18,12 +18,7 @@ export default function ContactList() {
   } = useContext(AppContext);
   const [isContactModalVisible, setIsContactModalVisible] = useState(false);
   useEffect(() => {
-    const getFriendListInterval = setInterval(() => {
-      getFriendList();
-    }, 4000);
-    return () => {
-      clearInterval(getFriendListInterval);
-    };
+    getFriendList();
   }, []);
   const showConfirmUnfriend = () => {
     const confirmUnfriend = Modal.confirm({

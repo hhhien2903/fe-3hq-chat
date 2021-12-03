@@ -20,7 +20,7 @@ export default function ContactWindow() {
   useEffect(() => {
     const getListFrienRequestInterval = setInterval(() => {
       getListFriendRequest();
-    }, 4000);
+    }, 10000);
     return () => {
       clearInterval(getListFrienRequestInterval);
     };
