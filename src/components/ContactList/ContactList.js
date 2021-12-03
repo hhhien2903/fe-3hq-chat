@@ -27,10 +27,8 @@ export default function ContactList() {
       okText: 'Hủy kết bạn',
       okType: 'danger',
       cancelText: 'Hủy',
-
       onCancel() {
         confirmUnfriend.destroy();
-        console.log('1');
       },
       onOk() {
         console.log(currentFriend._id);
