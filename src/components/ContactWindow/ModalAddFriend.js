@@ -56,6 +56,13 @@ export default function ModalAddFriend() {
       }
     } catch (error) {
       console.log(error);
+      if (error.status === 404 || error) {
+        notification.open({
+          message: 'Thông báo',
+          description: 'Không tìm thấy',
+          duration: 2,
+        });
+      }
     }
   };
   const handleAddFriend = async () => {

@@ -1,7 +1,7 @@
-import { Avatar, Typography } from 'antd';
+import { Avatar } from 'antd';
 import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthProvider';
-import moment, { months } from 'moment';
+import moment from 'moment';
 import './NotificationList.scss';
 const NotificationListItem = (props) => {
   const { noti } = props;
