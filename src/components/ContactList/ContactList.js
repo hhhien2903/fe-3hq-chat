@@ -18,7 +18,12 @@ export default function ContactList() {
   } = useContext(AppContext);
   const [isContactModalVisible, setIsContactModalVisible] = useState(false);
   useEffect(() => {
-    getFriendList();
+    const getFriendListInterval = setInterval(() => {
+      getFriendList();
+    }, 4000);
+    return () => {
+      clearInterval(getFriendListInterval);
+    };
   }, []);
   const showConfirmUnfriend = () => {
     const confirmUnfriend = Modal.confirm({
@@ -27,10 +32,8 @@ export default function ContactList() {
       okText: 'Hủy kết bạn',
       okType: 'danger',
       cancelText: 'Hủy',
-
       onCancel() {
         confirmUnfriend.destroy();
-        console.log('1');
       },
       onOk() {
         console.log(currentFriend._id);
