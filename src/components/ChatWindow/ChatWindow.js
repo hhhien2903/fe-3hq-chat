@@ -184,6 +184,14 @@ function ChatWindow() {
   };
 
   const handleUploadFile = async (fileData) => {
+    if (fileData.file > process.env.REACT_APP_FILE_SIZE_LIMIT) {
+      message.error(
+        `Tệp tin vượt quá dung lượng cho phép. (${
+          process.env.REACT_APP_FILE_SIZE_LIMIT / Math.pow(1024, 2)
+        } MB)`,
+      );
+      return;
+    }
     const fileTransform = new File([fileData.file], removeAccents(fileData.file.name), {
       type: fileData.file.type,
     });
@@ -209,7 +217,15 @@ function ChatWindow() {
   const checkFileIsImage = {
     beforeUpload: (file) => {
       if (!file['type'].includes('image')) {
-        message.error(`${file.name} không phải là tệp hình ảnh`);
+        message.error(`${file.name} không phải là tệp hình ảnh.`);
+        return false;
+      }
+      if (file.size > process.env.REACT_APP_IMAGE_SIZE_LIMIT) {
+        message.error(
+          `Tệp tin vượt quá dung lượng cho phép. (${
+            process.env.REACT_APP_IMAGE_SIZE_LIMIT / Math.pow(1024, 2)
+          } MB)`,
+        );
         return false;
       }
       return true;
@@ -220,6 +236,14 @@ function ChatWindow() {
     beforeUpload: (file) => {
       if (!file['type'].includes('video') && !file['type'].includes('audio')) {
         message.error(`${file.name} không phải là tệp video/audio`);
+        return false;
+      }
+      if (file.size > process.env.REACT_APP_VIDEO_SIZE_LIMIT) {
+        message.error(
+          `Tệp tin vượt quá dung lượng cho phép. (${
+            process.env.REACT_APP_VIDEO_SIZE_LIMIT / Math.pow(1024, 2)
+          } MB)`,
+        );
         return false;
       }
       return true;
@@ -550,6 +574,7 @@ function ChatWindow() {
                     multiple
                     customRequest={handleUploadImage}
                     progress={false}
+                    accept="image/*"
                   >
                     <Button id="btn-send-image" icon={<FaRegFileImage size={23} />} />
                   </Upload>
@@ -561,6 +586,7 @@ function ChatWindow() {
                     customRequest={handleUploadVideo}
                     progress={false}
                     previewFile={false}
+                    accept="video/*,audio/*"
                   >
                     <Button id="btn-send-image" icon={<FaRegFileVideo size={23} />} />
                   </Upload>
