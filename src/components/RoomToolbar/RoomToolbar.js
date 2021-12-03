@@ -77,6 +77,14 @@ function RoomToolbar() {
         message.error(`${file.name} không phải là tệp hình ảnh`);
         return false;
       }
+      if (file.size > process.env.REACT_APP_IMAGE_SIZE_LIMIT) {
+        message.error(
+          `Tệp tin vượt quá dung lượng cho phép. (${
+            process.env.REACT_APP_IMAGE_SIZE_LIMIT / Math.pow(1024, 2)
+          } MB)`,
+        );
+        return false;
+      }
       return true;
     },
   };
@@ -264,6 +272,7 @@ function RoomToolbar() {
                         <Upload
                           customRequest={handleUploadRoomAvatar}
                           progress={false}
+                          accept="image/*"
                           previewFile={false}
                         >
                           <Button
@@ -304,7 +313,9 @@ function RoomToolbar() {
                 grid={{ gutter: 5, column: 3 }}
                 dataSource={imageVideoMessage}
                 renderItem={(item) => (
-                  <List.Item style={{ display: 'flex', justifyContent: 'center' }}>
+                  <List.Item
+                    style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px' }}
+                  >
                     {item.messageType === MessageType.IMAGE ? (
                       <Image
                         style={{ objectFit: 'cover', borderRadius: '10px' }}
@@ -332,7 +343,7 @@ function RoomToolbar() {
                 grid={{ gutter: 5, column: 1 }}
                 dataSource={fileMessage}
                 renderItem={(item) => (
-                  <List.Item>
+                  <List.Item style={{ marginBottom: '8px' }}>
                     <a href={item.content}>
                       <div className="messageFile" s>
                         <Avatar
