@@ -18,7 +18,12 @@ export default function ContactWindow() {
     getListSuggestion();
   }, []);
   useEffect(() => {
-    getListFriendRequest();
+    const getListFrienRequestInterval = setInterval(() => {
+      getListFriendRequest();
+    }, 10000);
+    return () => {
+      clearInterval(getListFrienRequestInterval);
+    };
   }, []);
   const idUserRequest = friendsRequest.map((fr) => fr.senderId);
   useEffect(() => {
