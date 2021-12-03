@@ -183,7 +183,7 @@ function ChatWindow() {
   };
 
   const handleUploadFile = async (fileData) => {
-    if (fileData.file > process.env.REACT_APP_FILE_SIZE_LIMIT) {
+    if (fileData.file.size > process.env.REACT_APP_FILE_SIZE_LIMIT) {
       message.error(
         `Tệp tin vượt quá dung lượng cho phép. (${
           process.env.REACT_APP_FILE_SIZE_LIMIT / Math.pow(1024, 2)
