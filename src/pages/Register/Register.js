@@ -8,6 +8,7 @@ import {
   notification,
   Row,
   Select,
+  Modal,
 } from 'antd';
 import localeVN from 'antd/es/date-picker/locale/vi_VN';
 import moment from 'moment';
@@ -19,6 +20,7 @@ import background from '../../assets/images/backgound.jpg';
 import { firebaseAuth } from '../../config/firebase';
 import { AuthContext } from '../../contexts/AuthProvider';
 import './Register.scss';
+import { vietnameseNameRegex } from '../../utils/vietnameseRegex';
 
 const Register = () => {
   const history = useHistory();
@@ -29,27 +31,38 @@ const Register = () => {
     formCreateUser
       .validateFields()
       .then(async (value) => {
-        const { fullName, gender, dateOfBirth } = value;
-        const data = {
-          fullName: fullName,
-          dayOfBirth: dateOfBirth.format('DD/MM/YYYY'),
-          gender: gender,
-        };
+        const confirmRegisterModal = Modal.confirm({
+          title: 'Xác Nhận',
+          content: 'Bạn có chắc chắn với các thông tin đã nhập?',
+          okText: 'Xác Nhận',
+          cancelText: 'Không',
+          onOk: async () => {
+            const { fullName, gender, dateOfBirth } = value;
+            const data = {
+              fullName: fullName,
+              dayOfBirth: dateOfBirth.format('DD/MM/YYYY'),
+              gender: gender,
+            };
 
-        try {
-          const res = await userApi.createUser(data);
-          setUser(res);
-          history.push('/');
-        } catch (error) {
-          notification.open({
-            key: 'errorFetchApi',
-            message: 'Hệ thống đang gặp một chút sự cố!',
-            description:
-              'Thành thật xin lỗi! Hệ thống hiện đang gặp một chút sự cố, bạn hãy quay lại sau nhé!',
-            duration: 10,
-          });
-          console.log(error);
-        }
+            try {
+              const res = await userApi.createUser(data);
+              setUser(res);
+              history.push('/');
+            } catch (error) {
+              notification.open({
+                key: 'errorFetchApi',
+                message: 'Hệ thống đang gặp một chút sự cố!',
+                description:
+                  'Thành thật xin lỗi! Hệ thống hiện đang gặp một chút sự cố, bạn hãy quay lại sau nhé!',
+                duration: 10,
+              });
+              console.log(error);
+            }
+          },
+          onCancel() {
+            confirmRegisterModal.destroy();
+          },
+        });
       })
       .catch((err) => {
         console.log(err);
@@ -82,8 +95,13 @@ const Register = () => {
                   { required: true, message: 'Họ và Tên không được để trống' },
                   {
                     required: true,
-                    pattern: new RegExp(/^([^0-9]*)$\b/),
+                    pattern: vietnameseNameRegex,
                     message: 'Họ và Tên không được chứa ký tự số',
+                  },
+                  {
+                    required: true,
+                    max: 50,
+                    message: 'Họ và Tên không được vượt quá 50 ký tự',
                   },
                 ]}
                 name="fullName"
