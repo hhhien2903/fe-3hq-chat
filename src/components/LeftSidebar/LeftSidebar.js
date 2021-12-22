@@ -74,7 +74,7 @@ function LeftSidebar() {
     formUpdateUser
       .validateFields()
       .then(async (formValue) => {
-        if (!vietnameseNameRegex.test(editName) && editName.length <= 50) {
+        if (!vietnameseNameRegex.test(editName) || editName.length > 50) {
           notification.open({
             message: 'Họ và tên không hợp lệ!',
             description:
