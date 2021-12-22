@@ -6,10 +6,11 @@ import {
   Input,
   message,
   Modal,
-  notification, Radio,
+  notification,
+  Radio,
   Tooltip,
   Typography,
-  Upload
+  Upload,
 } from 'antd';
 import ImgCrop from 'antd-img-crop';
 import localeVN from 'antd/es/date-picker/locale/vi_VN';
@@ -28,7 +29,7 @@ import { AppContext } from '../../contexts/AppProvider';
 import { AuthContext } from '../../contexts/AuthProvider';
 import './LeftSidebar.scss';
 import './ModalUserInfo.scss';
-
+import { vietnameseNameRegex } from '../../utils/vietnameseRegex';
 const { Title } = Typography;
 function LeftSidebar() {
   const { user, setUser } = useContext(AuthContext);
@@ -38,7 +39,11 @@ function LeftSidebar() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const showModal = () => {
     setEditName(user.fullName);
-    formUpdateUser.resetFields();
+    formUpdateUser.setFieldsValue({
+      gender: user.gender,
+      contact: user.contact,
+      dateOfBirth: moment(user.dayOfBirth, 'DD/MM/YYYY'),
+    });
     setIsModalVisible(true);
   };
 
@@ -69,6 +74,15 @@ function LeftSidebar() {
     formUpdateUser
       .validateFields()
       .then(async (formValue) => {
+        if (!vietnameseNameRegex.test(editName) && editName.length <= 50) {
+          notification.open({
+            message: 'Họ và tên không hợp lệ!',
+            description:
+              'Họ và tên không được chứa ký tự số, ký tự đặc biệt, không được rỗng và tối đa 50 ký tự.',
+            duration: 10,
+          });
+          return;
+        }
         const { gender, dateOfBirth } = formValue;
         const data = {
           fullName: editName,
@@ -82,6 +96,7 @@ function LeftSidebar() {
             description: 'Cập nhật thông tin thành công',
             duration: 5,
           });
+          setIsModalVisible(false);
           setUser(res);
         } catch (error) {
           notification.open({
@@ -118,7 +133,7 @@ function LeftSidebar() {
   };
 
   const showModalInfoTeam = () => {
-    const modalTeam = Modal.info({
+    Modal.info({
       title: '3HQ - Web',
       width: 500,
       okText: 'Xác nhận',
@@ -148,7 +163,6 @@ function LeftSidebar() {
           </div>
         </div>
       ),
-      onOk() {},
     });
   };
   return (
@@ -188,9 +202,9 @@ function LeftSidebar() {
             </span>
           </Link>
         </li>
-        <li className="sidebar-item" style={{ marginTop: 'auto' }}>
+        <li onClick={showModalInfoTeam} className="sidebar-item" style={{ marginTop: 'auto' }}>
           <span className="sidebar-link">
-            <MdInfo size={30} color="#FFFFFF" onClick={showModalInfoTeam} />
+            <MdInfo size={30} color="#FFFFFF" />
           </span>
         </li>
         <li onClick={showConfirmLogoutModal} className="sidebar-item setting">
@@ -263,11 +277,11 @@ function LeftSidebar() {
             form={formUpdateUser}
             layout="vertical"
             style={{ gap: '10px' }}
-            initialValues={{
-              contact: user.contact,
-              dateOfBirth: moment(user.dayOfBirth, 'DD/MM/YYYY'),
-              gender: user.gender,
-            }}
+            // initialValues={{
+            //   contact: user.contact,
+            //   dateOfBirth: moment(user.dayOfBirth, 'DD/MM/YYYY'),
+            //   gender: user.gender,
+            // }}
           >
             <Form.Item
               name="contact"
@@ -294,7 +308,6 @@ function LeftSidebar() {
                   message: 'Ngày sinh không được để trống!',
                 },
               ]}
-              // initialValue={ moment(user.dayOfBirth, 'DD/MM/YYYY')}
             >
               <DatePicker
                 disabledDate={(current) => current > moment().subtract(16, 'year').endOf('year')}
