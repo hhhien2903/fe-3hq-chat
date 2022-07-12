@@ -1,4 +1,4 @@
-- This is my Realtime WebSocket Chatting Website build with React Native (Ant Design).
+- This is my Realtime WebSocket Chatting Website build with ReactJS (Ant Design).
 
 - Some demo images:
 
